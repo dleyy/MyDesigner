@@ -32,22 +32,23 @@ export default class login extends Component {
 			ToastAndroid.show("输入正确的手机号码",2000);
 		}else if(this.state.password){
 			//DOFetch
-			alert(this.state.username+"   "+this.state.password);
+			let navigator = this.props.navigator;
+			if (navigator){
+				navigator.push({
+					name:'Home',
+				})
+			}
 		}else{
 			ToastAndroid.show("输入密码",2000);
 		}
 
 	}
-
-
-
 	back(){
 		let navigator = this.props.navigator;
 		if (navigator){
 			navigator.pop();
 		}
 	}
-
 	findPassword(){
 		let navigator = this.props.navigator;
 		if (navigator){

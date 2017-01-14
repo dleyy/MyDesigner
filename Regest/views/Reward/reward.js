@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
+  Text,
 } from 'react-native';
 import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';

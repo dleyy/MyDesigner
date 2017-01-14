@@ -19,6 +19,7 @@ import Regest from '../user/regest';
 import Login from '../user/login';
 import FindPassword from '../user/findPassword';
 import reSetPassword from '../user/reseetingPassword';
+import Home from './mainActivity';
 
 var _navigator;
 export default class mainIndex extends React.Component{
@@ -47,6 +48,9 @@ export default class mainIndex extends React.Component{
                 break;
             case 'reSetPassword':
                 Component=reSetPassword;
+                break;
+            case 'Home':
+                Component=Home;
                 break;
             default:
                 Component=FirstPage;

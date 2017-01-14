@@ -65,7 +65,7 @@ export default class login extends Component {
     		<Navibar 
     			back={()=>{this.back()}}
     			titleStyle={styles.titleStyle}
-    			leftIconColor={'rgb(69,175,175)'}
+    			leftIconColor={mainColor}
     			titleText={'登录'}/>
     		<View style={styles.headView}>
     			<Image style={styles.userIcon} source={require('../../Img/defaultIcon.jpg')} />
@@ -90,7 +90,7 @@ export default class login extends Component {
     			<Button 
     				contentText={'登录'}
     				Click={()=>this.Login()}
-    				bgcolor={'rgb(69,175,175)'}/>
+    				bgcolor={mainColor}/>
 
     			<TouchableOpacity onPress={()=>{this.findPassword()}}>
     				<Text style={{fontSize:Size(18),color:'#000',marginTop:25}}>忘记密码</Text>
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
 	},
 	titleStyle:{
 		alignSelf:'flex-start',
-		color:'rgb(69,175,175)',
+		color:mainColor,
 		fontSize:Size(20),
 	}
 

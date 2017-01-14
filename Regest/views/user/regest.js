@@ -13,7 +13,7 @@ import {
 import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
-import Icon from '../../node_modules/react-native-vector-icons/FontAwesome';
+import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 export default class regest extends Component{
 
 	constructor(props) {
@@ -60,6 +60,7 @@ export default class regest extends Component{
 	    mytimer = setTimeout(this.timedOut.bind(this), 1000);
 	    this.setState({
 	        timeOut:parseInt(haveTime)-1,
+	        
 	    })
     }
 
@@ -78,10 +79,10 @@ export default class regest extends Component{
 	}
 
 	toSevice(){
-
 	}
 
   render() {
+
     return (
       <View	style={styles.main}>
       	<Navibar 
@@ -132,7 +133,7 @@ export default class regest extends Component{
 				    <View style={styles.splan}/>
 				  	<TouchableOpacity onPress={()=>{this.setState({visible:!this.state.visible})}}
 				  					  style={{width:60,justifyContent:'center',margin:10,alignItems:'center'}}>
-				  		{this.state.visible?<Icon name='eye-slash' size={33} color={mainColor} />:<Icon name='eye' size={33} color={mainColor} />}
+				  		{this.state.visible?<Icon name='ios-eye-off-outline' size={33} color={mainColor} />:<Icon name='ios-eye-outline' size={33} color={mainColor} />}
 				  	</TouchableOpacity>
     			</View>
     			<View style={styles.inpute_item}>

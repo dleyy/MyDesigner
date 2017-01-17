@@ -14,6 +14,7 @@ import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
+import Bmob from '../http/bmob-min';
 export default class regest extends Component{
 
 	constructor(props) {
@@ -74,7 +75,18 @@ export default class regest extends Component{
 		}else if (!this.state.identify){
 			ToastAndroid.show('输入验证码',2000);
 		}else{
-
+		 	var GameScore = Bmob.Object.extend("GameScore");
+		    var gameScore = new GameScore();
+		    gameScore.set("score", 1337);
+		    gameScore.save(null, {
+		      success: function(object) {
+		        alert("create object success, object id:"+object.id);
+		      },
+		      error: function(model, error) {
+		        alert("create object fail");
+		      }
+		    });
+			
 		}
 	}
 

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';
-import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
+import {secondColor,mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 
 export default class home extends Component {

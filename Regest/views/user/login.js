@@ -14,7 +14,7 @@ import {
 import Button from '../myComponent/Button.js';
 import Navibar from '../myComponent/Navibar.js';
 
-import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
+import {secondColor,mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 
 
 export default class login extends Component {
@@ -74,7 +74,7 @@ export default class login extends Component {
     		<View style={styles.center}>
     			<TextInput 
     				style={{height: 40}}
-    				maxLength={15}
+    				maxLength={11}
     				placeholder={'手机号'}
     				placeholderTextColor={'#c4c4c4'}
 			        onChangeText={(username) => this.setState({username:username})}
@@ -94,7 +94,7 @@ export default class login extends Component {
     				bgcolor={mainColor}/>
 
     			<TouchableOpacity onPress={()=>{this.findPassword()}}>
-    				<Text style={{fontSize:Size(18),color:'#000',marginTop:25}}>忘记密码</Text>
+    				<Text style={{fontSize:Size(18),color:secondColor,marginTop:25}}>忘记密码</Text>
     			</TouchableOpacity>
     		</View>
     	</View>

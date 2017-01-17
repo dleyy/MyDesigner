@@ -16,6 +16,7 @@ var navbackground="#353232";
 var lineColor="#ededed";
 var appName="人人帮";
 var mainColor="#32B165";
+var secondColor='rgb(96,108,121)';
 
 String.prototype.replaceAll = function(s1,s2) { 
     return this.replace(new RegExp(s1,"gm"),s2); 

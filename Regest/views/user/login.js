@@ -13,8 +13,8 @@ import {
 
 import Button from '../myComponent/Button.js';
 import Navibar from '../myComponent/Navibar.js';
-
 import {secondColor,mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
+const HttpMoudle = require('react-native').NativeModules.HttpMoudle;
 
 
 export default class login extends Component {
@@ -31,17 +31,22 @@ export default class login extends Component {
 		if (!(/^1[34875]\d{9}$/.test(this.state.username))){
 			ToastAndroid.show("输入正确的手机号码",2000);
 		}else if(this.state.password){
-			//DOFetch
-			let navigator = this.props.navigator;
+			HttpMoudle.Login(this.state.username,(msg)=>{
+				alert(msg);
+			})
+
+		}else{
+			ToastAndroid.show("输入密码",2000);
+		}
+
+	}
+	jumpToHome(){
+		let navigator = this.props.navigator;
 			if (navigator){
 				navigator.push({
 					name:'Home',
 				})
 			}
-		}else{
-			ToastAndroid.show("输入密码",2000);
-		}
-
 	}
 	back(){
 		let navigator = this.props.navigator;

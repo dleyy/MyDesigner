@@ -1,7 +1,10 @@
 package com.regest;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
+
+import java.util.List;
 
 public class MainActivity extends ReactActivity {
 
@@ -13,4 +16,5 @@ public class MainActivity extends ReactActivity {
     protected String getMainComponentName() {
         return "Regest";
     }
+
 }

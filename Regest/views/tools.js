@@ -7,10 +7,6 @@ import {
     Platform,
     NetInfo
 } from 'react-native';
-import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter';
-const AppPlugin = require('react-native').NativeModules.PluginList;
-var ImagePickerManager = require('NativeModules').ImagePickerManager;
-import Toast from './tools/Toast'
 import {cgRoute} from "./constStr"
 var Tools = {
     timeFormat:function(time,space,callback){
@@ -88,34 +84,7 @@ var Tools = {
         }
         return "";
     },
-    //上报
-    toReport:function(label){
-        Tools.getStorage("maincfg",(resData)=>{
-               if(Tools.isDataValid(resData)){
-                resData=eval("("+resData+")")
-                   var posturl = resData.other&&resData.other.newixtoken?resData.other.newixtoken:"";
-                    AppPlugin.getPushToken((ixtoken,xgtoken)=>{
-                        if(!this.isDataValid(ixtoken)){
-                            return;
-                        }
-                        var PostData = {
-                            data:{
-                                ixtoken:ixtoken,
-                                type:label,
-                                tokentype:Platform.OS
-                            }
-                        }
-                        console.log("===toReport=postdata="+JSON.stringify(PostData));
-                        console.log("==toReport==url="+posturl);
-                        Tools.postNotBase64(posturl,PostData,(ret)=>{
-                            console.log("===toReport==resdata=="+JSON.stringify(ret));
-                        },(ret)=>{
-                            console.log("ret=="+ret);
-                        })
-                    })
-               }
-           })
-    },
+
     toQueryString: function (obj) {
         return obj ? Object.keys(obj).sort().map(function (key) {
             var val = obj[key];
@@ -180,40 +149,7 @@ var Tools = {
             }
         });       
     },
-    /*
-    * 统一处理返回结果
-    */
-    doResult:function(responseText,successCallBaack, errCallBack,showokMsg){
-       console.log("====responseText==="+responseText)
-       if(!responseText){
-            return;
-       }
-        var responseData=eval("(" + responseText + ")")
-        if(responseText=="Not Found"){
-            if(errCallBack){
-                errCallBack("服务器访问失败，请稍后重试");
-            }
-        }else if (responseData.resultcode >= 0) {
-             if(showokMsg){
-                Toast.show(responseData.resultmsg)
-            }
-             successCallBaack(responseData.data);
-        } else if(responseData.resultcode==-2){
-            //token验证失败
-            this.clearuserInfo();
-            if(errCallBack){
-                errCallBack("登录失效,请重新登录");
-            }
-        }else {
-            if(errCallBack){
-                if(this.isDataValid(responseData.resultmsg)){
-                    errCallBack(responseData.resultmsg);
-                }else{
-                    errCallBack("数据解析错误");
-                }
-           }
-        }
-    },
+
     doGet:function(url, successCallBack, errCallBack,returnType,showokMsg){
         console.log("url==="+url)
         NetInfo.isConnected.fetch().done((isConnected) => {
@@ -533,29 +469,6 @@ var Tools = {
         })
         return res;
     },
-    clearRoute:function(){
-        if(Platform.OS=='ios'){
-            return;
-        }
-        AppPlugin.setLocalStorage("cgRoute","")
-        AppPlugin.setLocalStorage("cgRouteJs","")
-    },
-    saveRoute:function(route,navigator){
-        if(Platform.OS=='ios'){
-            return;
-        }
-        cgRoute.route=route;
-        cgRoute.navigat=navigator.getCurrentRoutes();
-        AppPlugin.setLocalStorage("cgRouteJs",JSON.stringify(cgRoute))
-    },
-    getRoute:function(callback){
-        if(Platform.OS=='ios'){
-            return;
-        }
-        AppPlugin.getLocalStorage("cgRoute",(route)=>{
-            callback(route?JSON.parse(route):"")
-        })
-    },
     chooseImg:function(successCallBack,errCallBack,option,route,navigator) {
         if(route&&navigator){
             this.saveRoute(route,navigator);
@@ -582,31 +495,6 @@ var Tools = {
             //     path: 'images' // ios only - will save image at /Documents/images rather than the root
             // }
         };
-        ImagePickerManager.showImagePicker(options, (response) => {
-            //console.log("**********"+JSON.stringify(response))
-            if (response.didCancel) {
-               // errCallBack('User cancelled image picker')
-            }
-            else if (response.error) {
-                errCallBack(response.error)
-            }
-            else {
-               // console.log("**********"+JSON.stringify(response))
-               if(!option||!option.type||option.type=="base64"){
-                if(Platform.OS=='ios'){
-                    successCallBack({uri: 'data:image/jpg;base64,' + response.data, path:response.uri.replace('file://', ''),isStatic: true}) 
-                }else{
-                    successCallBack({uri: 'data:image/jpg;base64,' + response.data, isStatic: true}) 
-                }
-               }else{
-                    if(Platform.OS=='ios'){
-                        successCallBack({uri: response.uri.replace('file://', ''), isStatic: true})
-                    }else{
-                        successCallBack({uri: response.uri, isStatic: true})
-                    }
-               }
-            }
-        });
     },
     uploadImg:function(url,imguri,successCannBack,errCallBack){
         var request = new XMLHttpRequest();
@@ -630,15 +518,6 @@ var Tools = {
         request.open('POST', url);
         request.send(formData);
 
-    },
-    clearuserInfo:function(){
-        this.removeStorage("token");
-        this.removeStorage("iminfo");
-        this.removeStorage("duobaotoken");
-        this.removeStorage('isIMLogin');
-        this.removeStorage("usertype")
-        AppPlugin.logoutIM();
-        RCTDeviceEventEmitter.emit('IMchange', 0);
     },
     //格式化去除html标签
     htmlformat:function(str){

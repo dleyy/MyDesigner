@@ -14,6 +14,10 @@ import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
+import Tools from '../tools';
+
+const HttpMoudle = require('react-native').NativeModules.HttpMoudle;
+
 export default class regest extends Component{
 
 	constructor(props) {
@@ -71,21 +75,24 @@ export default class regest extends Component{
 			ToastAndroid.show('输入昵称',2000);
 		}else if(!this.state.password||this.state.password.length<6){
 			ToastAndroid.show('密码不能少于6位',2000);
-		}else if (!this.state.identify){
-			ToastAndroid.show('输入验证码',2000);
-		}else{
-		 	var GameScore = Bmob.Object.extend("GameScore");
-		    var gameScore = new GameScore();
-		    gameScore.set("score", 1337);
-		    gameScore.save(null, {
-		      success: function(object) {
-		        alert("create object success, object id:"+object.id);
-		      },
-		      error: function(model, error) {
-		        alert("create object fail");
-		      }
-		    });
-			
+		}
+		// else if (!this.state.identify){
+		// 	ToastAndroid.show('输入验证码',2000);
+		// }
+		else{
+			let strs={
+				"name":this.state.name,
+				'phoneNumber':this.state.phoneNumber,
+				'password':this.state.password
+			};
+		 	HttpMoudle.Regest(strs,(msg)=>{
+		 		if (msg){
+		 			Tools.setStorage('userid',msg),
+		 			ToastAndroid.show("注册成功！跳转至登录...",2000);		 							 			
+		 		}else{
+		 			ToastAndroid.show("手机号已注册",2000);		 		
+		 		}
+		 	})
 		}
 	}
 

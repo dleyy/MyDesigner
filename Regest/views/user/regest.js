@@ -146,6 +146,7 @@ export default class regest extends Component{
 	    				placeholder={'设置密码'}
 	    				secureTextEntry={this.state.visible}
 	    				placeholderTextColor={'#c4c4c4'}
+	    				maxLength={15}
 				        onChangeText={(password) => this.setState({password:password})}
 				        value={this.state.password}/>
 				    <View style={styles.splan}/>

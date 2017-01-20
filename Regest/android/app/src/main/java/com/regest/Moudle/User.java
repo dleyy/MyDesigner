@@ -9,7 +9,7 @@ import cn.bmob.v3.BmobObject;
 public class User extends BmobObject {
 
 
-    //昵称、身份证、密码、电话号码、信用分、是否认证、身份证地址、唯一标识码；
+    //昵称、身份证、密码、电话号码、信用分、是否认证、身份证地址；
     private String nickName;
     private String cid;
     private String password;
@@ -17,17 +17,6 @@ public class User extends BmobObject {
     private Integer credit;
     private Boolean qualification;
     private String cidimage;
-    private String objectId;
-
-    @Override
-    public String getObjectId() {
-        return objectId;
-    }
-
-    @Override
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
-    }
 
     public String getNickName() {
         return nickName;

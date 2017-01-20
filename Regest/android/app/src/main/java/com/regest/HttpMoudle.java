@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.telecom.Call;
+import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Callback;
@@ -23,6 +24,9 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.smssdk.EventHandler;
+import cn.smssdk.OnSendMessageHandler;
+import cn.smssdk.SMSSDK;
 
 /**
  * Created by dleyy on 2017/1/19.
@@ -59,17 +63,57 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
             @Override
             public void done(List<User> list, BmobException e) {
                 if (e==null){
-                    for (User user:list){
-                        mcallback.invoke(user.getObjectId(),user.getPassword());
+                    if(list.isEmpty()){
+                        mcallback.invoke("success","","");
+                    }else {
+                        for (User user : list) {
+                            mcallback.invoke("success",
+                                    user.getObjectId(),user.getPassword(), user.getNickName(),
+                                    user.getQualification(),user.getCid(),user.getCidimage(),
+                                    user.getCredit());
+                        }
                     }
                 }else{
-                    mcallback.invoke(e);
+                    mcallback.invoke("default",e.getMessage(),"");
                 }
             }
         });
         mcallback = cal;
     }
 
+    EventHandler eventHandler = new EventHandler(){
+        @Override
+        public void afterEvent(int i, int i1, Object o) {
+            super.afterEvent(i, i1, o);
+            if (i1== SMSSDK.RESULT_COMPLETE){
+                if (i == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                    Log.i("dleyy","提交验证码成功");
+                }else if (i == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+                    Log.i("dleyy","获取验证码成功");
+                }else if (i ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+                    Log.i("dleyy","返回支持发送验证码的国家列表");
+                }
+            }else{
+                Log.i("dleyy","回调失败");
+            }
+        }
+    };
+
+
+    /**
+     *
+     * @param user  用户信息
+     * @param cal   回调接口
+     */
+    public void insertInToServices(User user,Callback cal){
+        user.save(new SaveListener<String>() {
+            @Override
+            public void done(String s, BmobException e) {
+                mcallback.invoke(s);
+            }
+        });
+        mcallback = cal;
+    }
     /**
      *
      * @param map       昵称+手机号+密码
@@ -85,13 +129,10 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
         user.setNickName(map.getString("name"));
         user.setPhoneNum(map.getString("phoneNumber"));
         user.setPassword(map.getString("password"));
-        user.save(new SaveListener<String>() {
-            @Override
-            public void done(String s, BmobException e) {
-                   mcallback.invoke(s);
-            }
-        });
-        mcallback = cal;
+        SMSSDK.initSDK(getReactApplicationContext(),"1af4f2ab64f47","5fde4e6949cf21487c918f62734c3f9c");
+        SMSSDK.getVerificationCode("86","18408230949");
+        SMSSDK.registerEventHandler(eventHandler);
+        insertInToServices(user,cal);
     }
 
     @Override

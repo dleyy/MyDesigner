@@ -14,6 +14,7 @@ import {
 import Button from '../myComponent/Button.js';
 import Navibar from '../myComponent/Navibar.js';
 import {secondColor,mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
+import Tools from '../tools';
 const HttpMoudle = require('react-native').NativeModules.HttpMoudle;
 
 
@@ -31,10 +32,16 @@ export default class login extends Component {
 		if (!(/^1[34875]\d{9}$/.test(this.state.username))){
 			ToastAndroid.show("输入正确的手机号码",2000);
 		}else if(this.state.password){
-			HttpMoudle.Login(this.state.username,(msg)=>{
-				alert(msg);
+			HttpMoudle.Login(this.state.username,(rescode,msg,password)=>{
+				if (rescode=='success'&&password&&password==this.state.password){
+					Tools.setStorage('userid',msg),
+					this.jumpToHome();
+				}else if(rescode=='default'){
+					ToastAndroid.show("请检查网络",2000);
+				}else{
+					ToastAndroid.show("用户名或密码错误",2000);
+				}
 			})
-
 		}else{
 			ToastAndroid.show("输入密码",2000);
 		}
@@ -88,6 +95,7 @@ export default class login extends Component {
     				style={{height: 40,marginTop:5}}
     				secureTextEntry={true}
     				placeholder={'密码'}
+    				maxLength={15}
     				placeholderTextColor={'#c4c4c4'}
 			        onChangeText={(password) => this.setState({password:password})}
 			        value={this.state.password}/>

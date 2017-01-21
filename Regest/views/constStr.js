@@ -14,7 +14,7 @@ var pixe=PixelRatio.get()
 var MainTabHeight =48;
 var navbackground="#353232";
 var lineColor="#ededed";
-var appName="人人帮";
+var appName=" ";
 var mainColor="#32B165";
 var secondColor='rgb(96,108,121)';
 

@@ -42,11 +42,22 @@ export default class regest extends Component{
 	}
 
 	sendSMSMessage(){
-			if (!this.state.isShowTime){
+			if (!this.state.phoneNumber){
+				ToastAndroid.show("输入手机号码",1000);
+			}else if (!this.state.isShowTime&&this.state.phoneNumber){
 				this.setState({
 					isShowTime:true,
 				})
-			this.timedOut();
+				HttpMoudle.getSMSMessage(this.state.phoneNumber,(msg)=>{
+					if (msg=="error"){
+						ToastAndroid.show("获取验证码失败",1000);
+					}else if(msg==2){
+						ToastAndroid.show("获取验证码成功",1000);
+					}
+				})
+				this.timedOut();
+		}else{
+			ToastAndroid.show("稍后尝试",1000);
 		}
 	}
 
@@ -75,24 +86,30 @@ export default class regest extends Component{
 			ToastAndroid.show('输入昵称',2000);
 		}else if(!this.state.password||this.state.password.length<6){
 			ToastAndroid.show('密码不能少于6位',2000);
-		}
-		// else if (!this.state.identify){
-		// 	ToastAndroid.show('输入验证码',2000);
-		// }
-		else{
+		}else if (this.state.showText=='发送验证码'){
+			ToastAndroid.show('请先获取验证码',2000);
+		}else{
 			let strs={
 				"name":this.state.name,
 				'phoneNumber':this.state.phoneNumber,
-				'password':this.state.password
+				'password':this.state.password,
+				'code':this.state.identify,
 			};
-		 	HttpMoudle.Regest(strs,(msg)=>{
-		 		if (msg){
-		 			Tools.setStorage('userid',msg),
-		 			ToastAndroid.show("注册成功！跳转至登录...",2000);		 							 			
-		 		}else{
-		 			ToastAndroid.show("手机号已注册",2000);		 		
-		 		}
-		 	})
+
+			HttpMoudle.identifyCode(strs,(msg)=>{
+				if (msg==6){
+					alert(msg);
+					HttpMoudle.Regest(strs,(msg)=>{
+						if (msg){
+				 				Tools.setStorage('userid',msg),
+				 				ToastAndroid.show("注册成功！跳转至登录...",2000);		 							 			
+				 			}else{
+				 				ToastAndroid.show("手机号已注册",2000);}
+							})
+						}else{
+					ToastAndroid.show("验证码验证失败",2000);
+				}
+			});
 		}
 	}
 

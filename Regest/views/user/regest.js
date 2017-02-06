@@ -34,6 +34,10 @@ export default class regest extends Component{
 	  };
 	}
 
+	componentWillUnmount() {
+	  this.mytimer && clearTimeout(this.mytimer);
+	}
+
 	back(){
 		let navigator = this.props.navigator;
 		if (navigator){
@@ -47,6 +51,7 @@ export default class regest extends Component{
 			}else if (!this.state.isShowTime&&this.state.phoneNumber){
 				this.setState({
 					isShowTime:true,
+					showText:'',
 				})
 				HttpMoudle.getSMSMessage(this.state.phoneNumber,(msg)=>{
 					if (msg=="error"){
@@ -64,7 +69,7 @@ export default class regest extends Component{
 	timedOut() {
       	var haveTime = this.state.timeOut;
 	    if (this.state.timeOut<= 0){
-	        mytimer&&clearTimeout(mytimer);
+	        this.mytimer&&clearTimeout(this.mytimer);
 	        this.setState({
 	            timeOut:60,
 	            showText:'重新发送',
@@ -72,7 +77,7 @@ export default class regest extends Component{
 	        })
 	        return;
 	    }
-	    mytimer = setTimeout(this.timedOut.bind(this), 1000);
+	    this.mytimer = setTimeout(this.timedOut.bind(this), 1000);
 	    this.setState({
 	        timeOut:parseInt(haveTime)-1,
 	        
@@ -98,7 +103,6 @@ export default class regest extends Component{
 
 			HttpMoudle.identifyCode(strs,(msg)=>{
 				if (msg==6){
-					alert(msg);
 					HttpMoudle.Regest(strs,(msg)=>{
 						if (msg){
 				 				Tools.setStorage('userid',msg),

@@ -15,6 +15,7 @@ import Button from '../myComponent/Button.js';
 import Navibar from '../myComponent/Navibar.js';
 import {secondColor,mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Tools from '../tools';
+import Loading from '../myComponent/loading.js';
 const HttpMoudle = require('react-native').NativeModules.HttpMoudle;
 
 
@@ -25,6 +26,7 @@ export default class login extends Component {
 	  this.state = {
 	  	username:'',
 	  	password:'',
+	  	logining:false,
 	  };
 	}
 
@@ -32,14 +34,18 @@ export default class login extends Component {
 		if (!(/^1[34875]\d{9}$/.test(this.state.username))){
 			ToastAndroid.show("输入正确的手机号码",2000);
 		}else if(this.state.password){
+			this.setState({logining:true});
 			HttpMoudle.Login(this.state.username,(rescode,msg,password)=>{
 				if (rescode=='success'&&password&&password==this.state.password){
 					Tools.setStorage('userid',msg),
 					this.jumpToHome();
+					this.setState({logining:false});
 				}else if(rescode=='default'){
 					ToastAndroid.show("请检查网络",2000);
+					this.setState({logining:false});
 				}else{
 					ToastAndroid.show("用户名或密码错误",2000);
+					this.setState({logining:false});
 				}
 			})
 		}else{
@@ -110,9 +116,21 @@ export default class login extends Component {
     				<Text style={{fontSize:Size(18),color:secondColor,marginTop:25}}>忘记密码</Text>
     			</TouchableOpacity>
     		</View>
+    		{this.renderLoading()}
     	</View>
     );
   }
+
+  renderLoading(){
+  	if (!this.state.logining){
+   		return null;
+  	}else{
+  		return <Loading/>
+  	}
+  }
+
+
+
 }
 
 const styles = StyleSheet.create({

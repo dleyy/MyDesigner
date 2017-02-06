@@ -12,6 +12,7 @@ import {
 import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
+import Loading from '../myComponent/loading.js';
 
 export default class reseetingPassword extends Component {
 	constructor(props) {
@@ -25,16 +26,17 @@ export default class reseetingPassword extends Component {
 	  	timeOut:60,
 	  	showText:'发送验证码',
 	  	isShowTime:false,
+	  	resting:false,
 	  };
 	}
 
 	resetingPassword(){
-		if (!(/^1[34875]\d{9}$/.test(this.state.phoneNumber))){
-			ToastAndroid.show('手机号不正确',2000)
-		}else if(!this.state.password||!this.state.repassword){
+		if(!this.state.password||!this.state.repassword){
 			ToastAndroid.show('输入密码',2000);
 		}else if(!this.state.identify){
 			ToastAndroid.show('输入验证码',2000);
+		}else if (!this.state.password==this.state.repassword){
+			ToastAndroid.show('两次密码不一致',2000);
 		}else{
 
 		}
@@ -71,6 +73,14 @@ export default class reseetingPassword extends Component {
 	    this.setState({
 	        timeOut:parseInt(haveTime)-1,
 	    })
+    }
+
+    renderLoading(){
+    	if (this.state.resting){
+    		return <Loading/>
+    	}else{
+    		return null;
+    	}
     }
 
 
@@ -148,7 +158,7 @@ export default class reseetingPassword extends Component {
     		</View>
 
     		<View style={{flex:3}}/>
-
+    		{this.renderLoading()}
      	</View>
     );
   }

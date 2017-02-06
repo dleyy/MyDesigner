@@ -5,6 +5,8 @@ import {
   StyleSheet,
   View,
   Text,
+  BackAndroid,
+  ToastAndroid,
   TouchableOpacity,
   ViewPagerAndroid,
 } from 'react-native';
@@ -19,22 +21,38 @@ import Message from '../Message/message';
 import Mine from '../Mine/mine';
 import Reward from '../Reward/reward';
 
-
-
 var DEFAULT_TABLENGTH = screenWidth/4;
 export default class mainActivity extends Component {
 	constructor(props) {
 	  super(props);
-	
+    //this.onBack = this.existApp.bind(this);
+    this.ee = 0,
 	  this.state = {
 	  	selectedTab:0,
 	  };
 	}
 
+  componentDidMount() {
+    //BackAndroid.addEventListener('BackPress',this.onBack);
+  }
+
+  componentWillUnmount() {
+    //BackAndroid.removeEventListener('BackPress',this.onBack);
+  }
+
+  // existApp(){
+  //   if(this.ee==0){
+  //     this.ee=1;
+  //     ToastAndroid.show("再按一次退出",ToastAndroid.SHORT);
+  //     this.timer = setTimeout(() => {this.ee=0;},2000);
+  //     return true;
+  //   }
+  //     return false;
+  // }
+
   myonPageScroll(e){
     this.setState({
       selectedTab:e.nativeEvent.offset+e.nativeEvent.position,
-
     })
   }
   changeSelectTab(i){

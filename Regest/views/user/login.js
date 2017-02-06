@@ -50,7 +50,7 @@ export default class login extends Component {
 	jumpToHome(){
 		let navigator = this.props.navigator;
 			if (navigator){
-				navigator.push({
+				navigator.resetTo({
 					name:'Home',
 				})
 			}

@@ -95,6 +95,10 @@ export default class mainIndex extends React.Component{
         });
     }
 
+    componentWillUnmount() {
+      BackAndroid.removeEventListener('hardwareBackPress');
+    }
+
     
     render() {
             return (

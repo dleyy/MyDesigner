@@ -15,7 +15,8 @@ import Button from '../myComponent/Button.js';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 import Tools from '../tools';
-
+import Loading from '../myComponent/loading';
+        
 const HttpMoudle = require('react-native').NativeModules.HttpMoudle;
 
 export default class regest extends Component{
@@ -31,6 +32,7 @@ export default class regest extends Component{
 	  	timeOut:60,
 	  	showText:'发送验证码',
 	  	isShowTime:false,
+	  	regestting:false,
 	  };
 	}
 
@@ -84,6 +86,15 @@ export default class regest extends Component{
 	    })
     }
 
+    jumpToLogin(){
+    	let navigator = this.props.navigator;
+    	if (navigator){
+    		navigator.replace({
+    			name:'Login',
+    		})
+    	};
+    }
+
 	Regest(){
 		if (!(/^1[34875]\d{9}$/.test(this.state.phoneNumber))){
 			ToastAndroid.show('输入正确的手机号',2000);
@@ -105,12 +116,15 @@ export default class regest extends Component{
 				if (msg==6){
 					HttpMoudle.Regest(strs,(msg)=>{
 						if (msg){
+								this.setState({regestting:false});
 				 				Tools.setStorage('userid',msg),
 				 				ToastAndroid.show("注册成功！跳转至登录...",2000);		 							 			
 				 			}else{
+				 				this.setState({regestting:false});
 				 				ToastAndroid.show("手机号已注册",2000);}
 							})
 						}else{
+							this.setState({regestting:false});
 					ToastAndroid.show("验证码验证失败",2000);
 				}
 			});
@@ -120,8 +134,14 @@ export default class regest extends Component{
 	toSevice(){
 	}
 
-  render() {
+	renderLoading(){
+		if (this.state.regestting){
+			return <Loading/>
+		}
+		return null;
+	}
 
+  render() {
     return (
       <View	style={styles.main}>
       	<Navibar 
@@ -211,6 +231,7 @@ export default class regest extends Component{
 	    		</View>
     		</View>
     	</View>
+    	{this.renderLoading()}
       </View>
     );
   }

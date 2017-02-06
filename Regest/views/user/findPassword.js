@@ -67,7 +67,7 @@ export default class findPassword extends Component {
             maxLength={11}
             placeholder={'手机号'}
             keyboardType={'numeric'}
-            autoFocus={true}
+            autoFocus={false}
             placeholderTextColor={'#c4c4c4'}
             onChangeText={(phoneNumber) => this.setState({phoneNumber:phoneNumber})}
             value={this.state.phoneNumber}/>

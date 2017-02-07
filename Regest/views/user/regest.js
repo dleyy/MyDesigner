@@ -55,14 +55,14 @@ export default class regest extends Component{
 					isShowTime:true,
 					showText:'',
 				})
-				HttpMoudle.getSMSMessage(this.state.phoneNumber,(msg)=>{
-					if (msg=="error"){
-						ToastAndroid.show("获取验证码失败",1000);
-					}else if(msg==2){
-						ToastAndroid.show("获取验证码成功",1000);
-					}
-				})
 				this.timedOut();
+				HttpMoudle.getSMSMessage(this.state.phoneNumber,(successmsg)=>{
+					ToastAndroid.show(successmsg,1000);
+				},(errormsg)=>{
+					this.mytimer && clearTimeout(this.mytimer);
+					this.setState({isShowTime:false,showText:'重新发送',timeOut:60})
+					ToastAndroid.show("获取验证码失败",1000);
+				})
 		}else{
 			ToastAndroid.show("稍后尝试",1000);
 		}
@@ -105,6 +105,7 @@ export default class regest extends Component{
 		}else if (this.state.showText=='发送验证码'){
 			ToastAndroid.show('请先获取验证码',2000);
 		}else{
+			this.setState({regestting:true});
 			let strs={
 				"name":this.state.name,
 				'phoneNumber':this.state.phoneNumber,
@@ -112,8 +113,7 @@ export default class regest extends Component{
 				'code':this.state.identify,
 			};
 
-			HttpMoudle.identifyCode(strs,(msg)=>{
-				if (msg==6){
+			HttpMoudle.identifyCode(strs,(successMsg)=>{
 					HttpMoudle.Regest(strs,(msg)=>{
 						if (msg){
 								this.setState({regestting:false});
@@ -122,12 +122,12 @@ export default class regest extends Component{
 				 			}else{
 				 				this.setState({regestting:false});
 				 				ToastAndroid.show("手机号已注册",2000);}
-							})
-						}else{
-							this.setState({regestting:false});
-					ToastAndroid.show("验证码验证失败",2000);
-				}
-			});
+							},(error)=>{})},
+					(errorMsg)=>{
+						this.setState({regestting:false});
+						ToastAndroid.show("验证码验证失败",2000);
+					}
+			);
 		}
 	}
 
@@ -209,7 +209,7 @@ export default class regest extends Component{
 				    <TouchableOpacity onPress={()=>this.sendSMSMessage()}
 				    				  style={{justifyContent: 'center',alignItems: 'center',}}>
 				    	<Text style={styles.noticeText}>
-				    		{this.state.isShowTime?this.state.timeOut+"s":this.state.showText}
+				    		{this.state.isShowTime?this.state.timeOut+"s后重试":this.state.showText}
 				    	</Text>
 				    </TouchableOpacity>
     			</View>

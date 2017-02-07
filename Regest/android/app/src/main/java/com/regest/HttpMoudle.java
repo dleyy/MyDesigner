@@ -36,7 +36,8 @@ import cn.smssdk.SMSSDK;
 
 public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEventListener,LifecycleEventListener{
 
-    private static Callback mcallback;
+    private Callback mcallback;
+    private static Callback sCallback,eCallback;
 
     public HttpMoudle(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -57,7 +58,7 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
      * @param cal           回调函数
      */
     @ReactMethod
-    public void Login(String phoneNumber, final Callback cal){
+    public void Login(String phoneNumber,Callback cal){
         BmobQuery<User> user = new BmobQuery<>();
         user.addWhereEqualTo("phoneNum",phoneNumber);
         user.setLimit(1);
@@ -87,48 +88,63 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
     /**
      * 验证验证码接口;
      * @param map
-     * @param cal
+     * @param successCallback
+     * @param errorCallback
      */
     @ReactMethod
-    public void identifyCode(ReadableMap map, final Callback cal){
+    public void identifyCode(ReadableMap map,Callback successCallback, Callback errorCallback){
         SMSSDK.submitVerificationCode("86",map.getString("phoneNumber"),map.getString("code"));
+        sCallback=successCallback;
+        eCallback=errorCallback;
         EventHandler eventHandler = new EventHandler(){
             @Override
             public void afterEvent(int i, int i1, Object o) {
                 super.afterEvent(i, i1, o);
-                if (i1==SMSSDK.RESULT_COMPLETE){
-                    cal.invoke(6);
+                if (i1==SMSSDK.RESULT_COMPLETE&&sCallback!=null){
+                    sCallback.invoke(6);
+                    sCallback=null;
                 }else{
-                    cal.invoke("error");
+                    if (eCallback!=null) {
+                        eCallback.invoke("error");
+                        eCallback = null;
+                    }
                 }
             }
         };
         SMSSDK.registerEventHandler(eventHandler);
-        mcallback=cal;
     }
 
 
     /**
      *注册。。。
-     * @param user  用户信息
-     * @param cal   回调接口
+     *
      */
-    public void insertInToServices(User user,Callback cal){
+    public void insertInToServices(User user, Callback successCallback, Callback errorCallback){
+        sCallback = successCallback;
+        eCallback = errorCallback;
         user.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
-                mcallback.invoke(s);
+                if (sCallback!=null){
+                    sCallback.invoke(s);
+                    sCallback=null;
+                }
+                if (eCallback!=null){
+                    eCallback.invoke(s);
+                    eCallback=null;
+                }
             }
         });
-        mcallback = cal;
     }
+
     /**
-     *注册接口；
-     * @param map       昵称+手机号+密码+验证码
-     * @param cal       回调函数
+     * 注册接口；
+     * @param map
+     * @param successCallback
+     * @param errorCallback
      */
     @ReactMethod
-    public void Regest(ReadableMap map, Callback cal){
+    public void Regest(ReadableMap map, Callback successCallback,Callback errorCallback){
         User user = new User();
         user.setCid("");
         user.setCredit(0);
@@ -137,33 +153,39 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
         user.setNickName(map.getString("name"));
         user.setPhoneNum(map.getString("phoneNumber"));
         user.setPassword(map.getString("password"));
-        insertInToServices(user,cal);
+        insertInToServices(user,successCallback,errorCallback);
     }
 
     /**
      * 发送短信验证码接口；
      * @param phoneNumber
-     * @param cal
+     * @param successcallback
+     * @param errorcallback
      */
     @ReactMethod
-    public void getSMSMessage(String phoneNumber, final Callback cal){
+    public void getSMSMessage(String phoneNumber,Callback successcallback, Callback errorcallback){
         SMSSDK.initSDK(getReactApplicationContext(),"1af4f2ab64f47","5fde4e6949cf21487c918f62734c3f9c");
         SMSSDK.getVerificationCode("86",phoneNumber);
+        sCallback=successcallback;
+        eCallback=errorcallback;
         EventHandler eventHandler = new EventHandler(){
             @Override
             public void afterEvent(int i, int i1, Object o) {
                 super.afterEvent(i, i1, o);
                 if (i1==SMSSDK.RESULT_COMPLETE){
-                    if (i==SMSSDK.EVENT_GET_VERIFICATION_CODE){
-                        cal.invoke(2);
+                    if (i==SMSSDK.EVENT_GET_VERIFICATION_CODE&&sCallback!=null) {
+                        sCallback.invoke("发送成功");
+                        sCallback=null;
                     }
                 }else{
-                        cal.invoke("error");
+                    if (eCallback!=null) {
+                        eCallback.invoke("发送失败");
+                        eCallback=null;
+                    }
                 }
             }
         };
         SMSSDK.registerEventHandler(eventHandler);
-        mcallback=cal;
     }
 
     @Override

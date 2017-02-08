@@ -118,7 +118,8 @@ export default class regest extends Component{
 						if (msg){
 								this.setState({regestting:false});
 				 				Tools.setStorage('userid',msg),
-				 				ToastAndroid.show("注册成功！跳转至登录...",2000);		 							 			
+				 				ToastAndroid.show("注册成功！",2000);
+				 				this.jumpToLogin();		 							 			
 				 			}else{
 				 				this.setState({regestting:false});
 				 				ToastAndroid.show("手机号已注册",2000);}

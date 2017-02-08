@@ -51,9 +51,9 @@ export default class mainActivity extends Component {
   // }
 
   myonPageScroll(e){
-    this.setState({
-      selectedTab:e.nativeEvent.offset+e.nativeEvent.position,
-    })
+    // this.setState({
+    //   selectedTab:e.nativeEvent.offset+e.nativeEvent.position,
+    // })
   }
   changeSelectTab(i){
     this.setState({
@@ -93,25 +93,25 @@ export default class mainActivity extends Component {
         <View style={styles.foot}>
             <TouchableOpacity onPress={()=>{this.changeSelectTab(0)}}
                 style={styles.foot_items}>
-                <Icon name={'ios-planet-outline'} size={23} color={this.state.selectedTab<1?mainColor:secondColor}/>
-                <Text style={{fontSize:Size(16),color:this.state.selectedTab<1?mainColor:secondColor}}>首页</Text>
+                <Icon name={'md-planet'} size={23} color={this.state.selectedTab==0?mainColor:secondColor}/>
+                <Text style={{fontSize:Size(16),color:this.state.selectedTab==0?mainColor:secondColor}}>首页</Text>
             </TouchableOpacity>
             
             <TouchableOpacity onPress={()=>{this.changeSelectTab(1)}} 
                 style={styles.foot_items}>
-                <Icon name={'ios-clipboard-outline'} size={23} color={this.state.selectedTab==1?mainColor:secondColor}/>
+                <Icon name={'md-clipboard'} size={23} color={this.state.selectedTab==1?mainColor:secondColor}/>
                 <Text style={{fontSize:Size(16),color:this.state.selectedTab==1?mainColor:secondColor}}>悬赏</Text>
             </TouchableOpacity>
             
             <TouchableOpacity onPress={()=>{this.changeSelectTab(2)}}
                 style={styles.foot_items}>
-                <Icon name={'ios-chatbubbles-outline'} size={23} color={this.state.selectedTab==2?mainColor:secondColor}/>
+                <Icon name={'md-chatbubbles'} size={23} color={this.state.selectedTab==2?mainColor:secondColor}/>
                 <Text style={{fontSize:Size(16),color:this.state.selectedTab==2?mainColor:secondColor}}>消息</Text>
             </TouchableOpacity>
             
             <TouchableOpacity onPress={()=>{this.changeSelectTab(3)}} 
                 style={styles.foot_items}>
-                <Icon name={'ios-contact-outline'} size={23} color={this.state.selectedTab==3?mainColor:secondColor}/>
+                <Icon name={'md-person'} size={23} color={this.state.selectedTab==3?mainColor:secondColor}/>
                 <Text style={{fontSize:Size(16),color:this.state.selectedTab==3?mainColor:secondColor}}>我</Text>
             </TouchableOpacity>
         </View>

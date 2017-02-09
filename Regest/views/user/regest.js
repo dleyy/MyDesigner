@@ -123,7 +123,7 @@ export default class regest extends Component{
 				 			}else{
 				 				this.setState({regestting:false});
 				 				ToastAndroid.show("手机号已注册",2000);}
-							},(error)=>{})},
+							})},
 					(errorMsg)=>{
 						this.setState({regestting:false});
 						ToastAndroid.show("验证码验证失败",2000);

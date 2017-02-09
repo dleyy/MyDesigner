@@ -103,10 +103,12 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
                 if (i1==SMSSDK.RESULT_COMPLETE&&sCallback!=null){
                     sCallback.invoke(6);
                     sCallback=null;
+                    eCallback=null;
                 }else{
                     if (eCallback!=null) {
                         eCallback.invoke("error");
-                        eCallback = null;
+                        sCallback=null;
+                        eCallback=null;
                     }
                 }
             }
@@ -119,32 +121,23 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
      *注册。。。
      *
      */
-    public void insertInToServices(User user, Callback successCallback, Callback errorCallback){
-        sCallback = successCallback;
-        eCallback = errorCallback;
+    public void insertInToServices(User user, Callback callback){
         user.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
-                if (sCallback!=null){
-                    sCallback.invoke(s);
-                    sCallback=null;
-                }
-                if (eCallback!=null){
-                    eCallback.invoke(s);
-                    eCallback=null;
-                }
+                mcallback.invoke(s);
             }
         });
+        mcallback=callback;
     }
 
     /**
      * 注册接口；
      * @param map
-     * @param successCallback
-     * @param errorCallback
+     * @param callback
      */
     @ReactMethod
-    public void Regest(ReadableMap map, Callback successCallback,Callback errorCallback){
+    public void Regest(ReadableMap map, Callback callback){
         User user = new User();
         user.setCid("");
         user.setCredit(0);
@@ -153,7 +146,7 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
         user.setNickName(map.getString("name"));
         user.setPhoneNum(map.getString("phoneNumber"));
         user.setPassword(map.getString("password"));
-        insertInToServices(user,successCallback,errorCallback);
+        insertInToServices(user,callback);
     }
 
     /**
@@ -176,12 +169,14 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
                     if (i==SMSSDK.EVENT_GET_VERIFICATION_CODE&&sCallback!=null) {
                         sCallback.invoke("发送成功");
                         sCallback=null;
-                    }
-                }else{
-                    if (eCallback!=null) {
-                        eCallback.invoke("发送失败");
                         eCallback=null;
                     }
+                }else{
+                        if(eCallback!=null) {
+                            eCallback.invoke("发送失败");
+                            sCallback=null;
+                            eCallback=null;
+                        }
                 }
             }
         };

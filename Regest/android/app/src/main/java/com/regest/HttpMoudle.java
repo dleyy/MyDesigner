@@ -183,6 +183,41 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
         SMSSDK.registerEventHandler(eventHandler);
     }
 
+    /**
+     * 获取用户信息
+     * @param phoneNumber       电话号码
+     * @param successCallback   成功回调
+     * @param errorCallback     失败回调
+     */
+    @ReactMethod
+    public void seach(String phoneNumber, final Callback successCallback, final Callback errorCallback){
+        BmobQuery<User> user = new BmobQuery<>();
+        user.addWhereEqualTo("phoneNum",phoneNumber);
+        user.setLimit(1);
+        sCallback = successCallback;
+        eCallback = errorCallback;
+        user.findObjects(new FindListener<User>() {
+            @Override
+            public void done(List<User> list, BmobException e) {
+                if (e == null) {
+                    if (list.isEmpty()) {
+                        errorCallback.invoke("获取信息失败");
+                    } else {
+                        for (User user : list) {
+                            successCallback.invoke("success",
+                                    user.getObjectId(), user.getPassword(), user.getNickName(),
+                                    user.getQualification(), user.getCid(), user.getCidimage(),
+                                    user.getCredit(), user.getAge(), user.getCity(), user.getUserHead(),
+                                    user.getSex());
+                        }
+                    }
+                } else {
+                    errorCallback.invoke(e.getMessage());
+                }
+            }
+        });
+    }
+
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         Log.i("dleyy","onActivityResult");

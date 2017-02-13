@@ -17,6 +17,12 @@ public class User extends BmobObject {
     private Integer credit;
     private Boolean qualification;
     private String cidimage;
+    private String userHead;
+    private String sex;
+    private int age;
+    private String city;
+
+
 
     public String getNickName() {
         return nickName;
@@ -72,5 +78,37 @@ public class User extends BmobObject {
 
     public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
+    }
+
+    public String getUserHead() {
+        return userHead;
+    }
+
+    public void setUserHead(String userHead) {
+        this.userHead = userHead;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

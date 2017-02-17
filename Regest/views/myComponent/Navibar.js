@@ -54,5 +54,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		fontSize:14,
+		marginRight:50,
 	}
 });

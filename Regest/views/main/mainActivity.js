@@ -73,19 +73,19 @@ export default class mainActivity extends Component {
           onPageScroll={this.myonPageScroll.bind(this)}
           initialPage={0}>
           <View >
-            <Home />
+            <Home navigator={this.props.navigator}/>
           </View>
           
           <View >
-            <Reward />
+            <Reward navigator={this.props.navigator}/>
           </View>
           
           <View >
-            <Message />
+            <Message navigator={this.props.navigator}/>
           </View>
           
           <View >
-            <Mine />
+            <Mine navigator={this.props.navigator}/>
           </View>
         </ViewPagerAndroid>
 

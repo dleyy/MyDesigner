@@ -262,14 +262,14 @@ var Tools = {
         });
     },
     
-    getStorage:function(key, callback){
+    getStorage:function(key){
         AsyncStorage.getItem(key.toLowerCase())
             .then((value) => {
-                callback(value);
+                return value;
             })
             .catch((error) => {
                 // alert(error)
-                callback(null)
+                return null;
             })
             .done();
     },

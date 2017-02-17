@@ -13,7 +13,9 @@ import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Loading from '../myComponent/loading.js';
+import Tools from '../tools';
 
+const HttpMoudle = require('react-native').NativeModules.HttpMoudle;
 export default class reseetingPassword extends Component {
 	constructor(props) {
 	  super(props);
@@ -30,16 +32,51 @@ export default class reseetingPassword extends Component {
 	  };
 	}
 
+	componentWillUnmount() {
+	  this.mytimer && clearTimeout(this.mytimer);
+	}
+
 	resetingPassword(){
-		if(!this.state.password||!this.state.repassword){
+		if (this.state.password.length<6||this.state.repassword.length<6){
+			ToastAndroid.show('密码不能小于6位',2000);
+		}else if(!this.state.password||!this.state.repassword){
 			ToastAndroid.show('输入密码',2000);
 		}else if(!this.state.identify){
 			ToastAndroid.show('输入验证码',2000);
 		}else if (!this.state.password==this.state.repassword){
 			ToastAndroid.show('两次密码不一致',2000);
 		}else{
-
+			this.doFindPassword();
 		}
+	}
+
+	doFindPassword(){
+		let strs={
+			"phoneNumber":this.state.phoneNumber,
+			"code":this.state.identify,
+			"password":this.state.password,
+		}
+		if(this.state.showText=='发送验证码'){
+			ToastAndroid.show("请先获取验证码",1000)
+		}else{
+		HttpMoudle.identifyCode(strs,(successMessage)=>{
+			HttpMoudle.updateUserPassword(Tools.getStorage('find_userID'),this.state.password,
+					(msg,detail)=>{
+						if (msg=='success'){
+							ToastAndroid.show("重置成功",2000)
+							 let navigator = this.props.navigator;
+							 if (navigator){
+							 	navigator.resetTo({
+									name:'Login',
+								})
+							 }
+						}else{
+							ToastAndroid.show("重置失败"+detail,2000)
+						}
+					})
+		},(errorMessage)=>{
+			ToastAndroid.show("验证码验证失败,请重新获取",2000)
+		})}
 	}
 
 	back(){
@@ -50,18 +87,29 @@ export default class reseetingPassword extends Component {
 	}
 
 	sendSMSMessage(){
-			if (!this.state.isShowTime){
-				this.setState({
-					isShowTime:true,
-				})
+		if (!this.state.isShowTime&&this.state.phoneNumber){
+			this.setState({
+				isShowTime:true,
+				timeOut:60,
+				showText:'',
+			})
 			this.timedOut();
+			HttpMoudle.getSMSMessage(this.state.phoneNumber,(successmsg)=>{
+				ToastAndroid.show("获取成功",1000);
+			},(errormsg)=>{
+				this.mytimer && clearTimeout(this.mytimer);
+				this.setState({isShowTime:false,showText:'重新发送',timeOut:60})
+				ToastAndroid.show("获取验证码失败",1000);
+			})
+		}else{
+			ToastAndroid.show("稍后尝试",1000);
 		}
 	}
 
-	timedOut() {
+    timedOut() {
       	var haveTime = this.state.timeOut;
 	    if (this.state.timeOut<= 0){
-	        mytimer&&clearTimeout(mytimer);
+	        this.mytimer&&clearTimeout(this.mytimer);
 	        this.setState({
 	            timeOut:60,
 	            showText:'重新发送',
@@ -69,9 +117,10 @@ export default class reseetingPassword extends Component {
 	        })
 	        return;
 	    }
-	    mytimer = setTimeout(this.timedOut.bind(this), 1000);
+	    this.mytimer = setTimeout(this.timedOut.bind(this), 1000);
 	    this.setState({
 	        timeOut:parseInt(haveTime)-1,
+	        
 	    })
     }
 

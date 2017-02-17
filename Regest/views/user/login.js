@@ -35,13 +35,14 @@ export default class login extends Component {
 			ToastAndroid.show("输入正确的手机号码",2000);
 		}else if(this.state.password){
 			this.setState({logining:true});
-			HttpMoudle.Login(this.state.username,(rescode,msg,password)=>{
-				if (rescode=='success'&&password&&password==this.state.password){
-					Tools.setStorage('userid',msg),
+			HttpMoudle.Login(this.state.username,(rescode,arrs,message)=>{
+				if (rescode=='success'&&arrs.Password&&arrs.Password==this.state.password){
+					console.log("李磊==="+JSON.stringify(arrs))
+					Tools.setStorage('userid',arrs.ObjectId),
 					this.jumpToHome();
 					this.setState({logining:false});
 				}else if(rescode=='default'){
-					ToastAndroid.show("请检查网络",2000);
+					ToastAndroid.show("请检查网络"+arrs,2000);
 					this.setState({logining:false});
 				}else{
 					ToastAndroid.show("用户名或密码错误",2000);

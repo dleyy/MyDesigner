@@ -12,12 +12,17 @@ import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
+import Loading from '../myComponent/loading.js';
+import Tools from '../tools';
+const HttpMoudle = require('react-native').NativeModules.HttpMoudle;
+
 export default class findPassword extends Component {
   	constructor(props) {
   	  super(props);
 
   	  this.state = {
   	  	phoneNumber:'',
+        logining:false,
   	  };
   	}
 
@@ -32,18 +37,42 @@ export default class findPassword extends Component {
     if (!(/^1[34875]\d{9}$/.test(this.state.phoneNumber))){
       ToastAndroid.show("输入正确的手机号码",2000);
     }else{
-      let navigator = this.props.navigator;
-      if (navigator){
-        navigator.push({
-          name:'reSetPassword',
-          param: {                 
-                  phoneNumber:this.state.phoneNumber,  
-                }
-        })
-      };
+      this.setState({
+        logining:true,
+      })
+
+      HttpMoudle.Login(this.state.phoneNumber,(codeId,Arrs,msg)=>{
+        if (codeId=='success'&&JSON.stringify(Arrs).length>10){
+          Tools.setStorage('find_userID',Arrs.ObjectId),
+          this.setState({logining:false})
+          this.jumpToNext();
+        }else{
+          this.setState({logining:false})
+          ToastAndroid.show("手机号暂未注册",1000);
+        }
+      });
     }
   }
 
+  jumpToNext(){
+    let navigator = this.props.navigator;
+    if (navigator){
+      navigator.push({
+        name:'reSetPassword',
+        param: {                 
+            phoneNumber:this.state.phoneNumber,  
+              }
+      })
+    }
+  }
+
+  renderLoading(){
+    if (!this.state.logining){
+      return null;
+    }else{
+      return <Loading/>
+    }
+  }
 
   render() {
     return (
@@ -80,6 +109,7 @@ export default class findPassword extends Component {
             bgcolor={mainColor}/>
         </View>
 
+        {this.renderLoading()}
 
       </View>
     );

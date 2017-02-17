@@ -10,14 +10,20 @@ import android.telecom.Call;
 import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
 import com.regest.Moudle.User;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +32,7 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 import cn.smssdk.EventHandler;
 import cn.smssdk.OnSendMessageHandler;
 import cn.smssdk.SMSSDK;
@@ -69,12 +76,13 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
                     if(list.isEmpty()){
                         mcallback.invoke("success","","");
                     }else {
-                        for (User user : list) {
-                            mcallback.invoke("success",
-                                    user.getObjectId(),user.getPassword(), user.getNickName(),
-                                    user.getQualification(),user.getCid(),user.getCidimage(),
-                                    user.getCredit());
-                        }
+                        WritableMap map = Arguments.createMap();
+                        map.putString("Password",list.get(0).getPassword());
+                        map.putString("ObjectId",list.get(0).getObjectId());
+                        map.putString("NickName",list.get(0).getNickName());
+                        map.putBoolean("Qualification",list.get(0).getQualification());
+                        map.putString("City",list.get(0).getCity());
+                        mcallback.invoke("success",map,"");
                     }
                 }else{
                     mcallback.invoke("default",e.getMessage(),"");
@@ -118,7 +126,7 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
 
 
     /**
-     *注册。。。
+     *注册
      *
      */
     public void insertInToServices(User user, Callback callback){
@@ -184,6 +192,31 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
     }
 
     /**
+     * 找回密码
+     * @param objectId      用户ID
+     * @param newPassword   新密码
+     * @param cal           回调
+     */
+    @ReactMethod
+    public void updateUserPassword(String objectId,String newPassword,Callback cal){
+        User user = new User();
+        user.setPassword(newPassword);
+        user.update(objectId, new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e==null) {
+                    mcallback.invoke("success","");
+                    Log.i("dleyy","更新成功");
+                }else{
+                    Log.i("dleyy","更新失败");
+                    mcallback.invoke("error",e.getMessage());
+                }
+            }
+        });
+        mcallback = cal;
+    }
+
+    /**
      * 获取用户信息
      * @param phoneNumber       电话号码
      * @param successCallback   成功回调
@@ -191,7 +224,7 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
      */
     @ReactMethod
     public void seach(String phoneNumber, final Callback successCallback, final Callback errorCallback){
-        BmobQuery<User> user = new BmobQuery<>();
+        final BmobQuery<User> user = new BmobQuery<>();
         user.addWhereEqualTo("phoneNum",phoneNumber);
         user.setLimit(1);
         sCallback = successCallback;
@@ -203,13 +236,9 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
                     if (list.isEmpty()) {
                         errorCallback.invoke("获取信息失败");
                     } else {
-                        for (User user : list) {
-                            successCallback.invoke("success",
-                                    user.getObjectId(), user.getPassword(), user.getNickName(),
-                                    user.getQualification(), user.getCid(), user.getCidimage(),
-                                    user.getCredit(), user.getAge(), user.getCity(), user.getUserHead(),
-                                    user.getSex());
-                        }
+                        WritableArray map = Arguments.createArray();
+                        map = (WritableArray) list.get(0);
+                        successCallback.invoke(map);
                     }
                 } else {
                     errorCallback.invoke(e.getMessage());

@@ -53,6 +53,7 @@ export default class regest extends Component{
 			}else if (!this.state.isShowTime&&this.state.phoneNumber){
 				this.setState({
 					isShowTime:true,
+					timeOut:60,
 					showText:'',
 				})
 				this.timedOut();

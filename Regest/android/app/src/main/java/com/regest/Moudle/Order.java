@@ -8,17 +8,20 @@ import cn.bmob.v3.BmobObject;
 
 
 //订单编号、发布者id、接单者id、订单类型、订单名、订单内容、发布时间、结束时间、确认订单完成的Key、订单状态
+//点赞数、评论数.
 public class Order extends BmobObject {
     private Integer orderid;
     private Integer publishid;
     private Integer receiveid;
-    private String style;
-    private String title;
-    private String content;
-    private String starttime;
-    private String endtime;
-    private Integer checkNum;
-    private String state;
+    private String orderstyle;
+    private String ordertitle;
+    private String ordercontent;
+    private String orderstarttime;
+    private String orderendtime;
+    private Integer ordercheckNum;
+    private String orderstate;
+    private Integer orderlike;
+    private Integer ordercomment;
 
     public Integer getOrderid() {
         return orderid;
@@ -44,59 +47,75 @@ public class Order extends BmobObject {
         this.receiveid = receiveid;
     }
 
-    public String getStyle() {
-        return style;
+    public String getOrderstyle() {
+        return orderstyle;
     }
 
-    public void setStyle(String style) {
-        this.style = style;
+    public void setOrderstyle(String orderstyle) {
+        this.orderstyle = orderstyle;
     }
 
-    public String getTitle() {
-        return title;
+    public String getOrdertitle() {
+        return ordertitle;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setOrdertitle(String ordertitle) {
+        this.ordertitle = ordertitle;
     }
 
-    public String getContent() {
-        return content;
+    public String getOrdercontent() {
+        return ordercontent;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setOrdercontent(String ordercontent) {
+        this.ordercontent = ordercontent;
     }
 
-    public String getStarttime() {
-        return starttime;
+    public String getOrderstarttime() {
+        return orderstarttime;
     }
 
-    public void setStarttime(String starttime) {
-        this.starttime = starttime;
+    public void setOrderstarttime(String orderstarttime) {
+        this.orderstarttime = orderstarttime;
     }
 
-    public String getEndtime() {
-        return endtime;
+    public String getOrderendtime() {
+        return orderendtime;
     }
 
-    public void setEndtime(String endtime) {
-        this.endtime = endtime;
+    public void setOrderendtime(String orderendtime) {
+        this.orderendtime = orderendtime;
     }
 
-    public Integer getCheckNum() {
-        return checkNum;
+    public Integer getOrdercheckNum() {
+        return ordercheckNum;
     }
 
-    public void setCheckNum(Integer checkNum) {
-        this.checkNum = checkNum;
+    public void setOrdercheckNum(Integer ordercheckNum) {
+        this.ordercheckNum = ordercheckNum;
     }
 
-    public String getState() {
-        return state;
+    public String getOrderstate() {
+        return orderstate;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setOrderstate(String orderstate) {
+        this.orderstate = orderstate;
+    }
+
+    public Integer getOrderlike() {
+        return orderlike;
+    }
+
+    public void setOrderlike(Integer orderlike) {
+        this.orderlike = orderlike;
+    }
+
+    public Integer getOrdercomment() {
+        return ordercomment;
+    }
+
+    public void setOrdercomment(Integer ordercomment) {
+        this.ordercomment = ordercomment;
     }
 }

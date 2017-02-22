@@ -17,6 +17,7 @@ var lineColor="#ededed";
 var appName=" ";
 var mainColor="#32B165";
 var secondColor='rgb(96,108,121)';
+var topheight=(Platform.OS ==='android')?22:30;
 
 String.prototype.replaceAll = function(s1,s2) { 
     return this.replace(new RegExp(s1,"gm"),s2); 
@@ -45,4 +46,4 @@ var Size=function(font){
 
 const PhImages={
 }
-module.exports ={mainColor,appName,phRoute,PhImages,Size,push,navheight,screenWidth,screenHeight,MainTabHeight,navbackground,lineColor,console}
+module.exports ={topheight,mainColor,appName,phRoute,PhImages,Size,push,navheight,screenWidth,screenHeight,MainTabHeight,navbackground,lineColor,console}

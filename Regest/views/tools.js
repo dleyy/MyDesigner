@@ -46,6 +46,68 @@ var Tools = {
             callback(4,0)
           }
     },
+        //获取资讯评论时间
+    getNewsCommentTime:function(pDate,returntime){
+        var returnMsg = "";
+        var nowDate = new Date();
+        var date = pDate.replace(" ","-");
+        var inDate = date.replace(/:/g,"-");
+        console.log("zixun===="+nowDate.getHours());
+        var dateArr = inDate.split("-");
+        console.log("zixun===="+nowDate.getFullYear()-dateArr[0]>1)
+        try{
+            if(nowDate.getFullYear()-dateArr[0]>1){
+                resultmsg = nowDate.getFullYear()-dateArr[0]+"年前";
+            }else if (nowDate.getFullYear()-dateArr[0]==1){
+                if (nowDate.getMonth()+1>=dateArr[1]){
+                    resultmsg = "1年前"
+                }else{
+                    resultmsg = 12-dateArr[1]+nowDate.getMonth()+1+"个月前";
+                }
+            }else{
+                if(nowDate.getMonth()+1-dateArr[1]>1){
+                    resultmsg = nowDate.getMonth()+1-dateArr[1]+"个月前";
+                }else if(nowDate.getMonth()+1-dateArr[1]==1){
+                    if (nowDate.getDate()>=dateArr[2]){
+                        resultmsg = "1个月前";
+                    }else{
+                        resultmsg = new Date(dateArr[0],dateArr[1],0).getDate()-dateArr[2]+nowDate.getDate()+"天前";
+                    }
+                }else{
+                    if(nowDate.getDate()-dateArr[2]>1){
+                        resultmsg = nowDate.getDate()-dateArr[2]+"天前";
+                    }else if(nowDate.getDate()-dateArr[2]==1){
+                        if (nowDate.getHours()>=dateArr[3]){
+                            resultmsg = "1天前";
+                        }else{
+                            resultmsg =(24-dateArr[3]+nowDate.getHours())+"小时前";
+                        }
+                    }else{
+                        if(nowDate.getHours()-dateArr[3]>1){
+                            resultmsg = nowDate.getHours()-dateArr[3] + "小时前"
+                        }else if(nowDate.getHours()-dateArr[3]==1){
+                            if (nowDate.getMinutes()>=dateArr[4]){
+                                resultmsg = "1小时前";
+                            }else{
+                               resultmsg = 60 - dateArr[4]+nowDate.getMinutes()+"分钟前"; 
+                            }
+                        }else{
+                            if(nowDate.getMinutes()-dateArr[4]>=1){
+                                resultmsg = nowDate.getMinutes()-dateArr[4]+"分钟前";
+                            }else {
+                                resultmsg = "刚刚";
+                            }
+                        }
+                    }
+                }
+            }
+            console.log("zixun===="+resultmsg);
+            return resultmsg;
+        }catch(e){
+            return pDate?pDate:null;
+        }
+
+    },
     /**
     * 处理日期显示的数据
     * @ pDate 接收到的日期字符串

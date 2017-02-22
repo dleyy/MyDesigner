@@ -1,5 +1,7 @@
 package com.regest.Moudle;
 
+import android.os.AsyncTask;
+
 import cn.bmob.v3.BmobObject;
 
 /**
@@ -53,4 +55,6 @@ public class Comment extends BmobObject {
     public void setCommentDisagreeNumber(Integer commentDisagreeNumber) {
         this.commentDisagreeNumber = commentDisagreeNumber;
     }
+
+
 }

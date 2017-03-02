@@ -252,7 +252,10 @@ var Tools = {
     },
     /**
      * scrollview 下拉刷新控制器
-     * @param isRefreshing
+     *tintColor ColorPropType   iOS平台适用  设置加载进度指示器的颜色
+     *colors [ColorPropType]   android平台适用  进行设置加载进去指示器的颜色，至少设置一种，最好可以设置4种
+     *title string iOS平台适用  设置加载进度指示器下面的标题文本信息 
+     *@param isRefreshing
      * @param _onRefresh
      * @returns {XML}
      */

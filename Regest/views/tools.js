@@ -52,9 +52,7 @@ var Tools = {
         var nowDate = new Date();
         var date = pDate.replace(" ","-");
         var inDate = date.replace(/:/g,"-");
-        console.log("zixun===="+nowDate.getHours());
         var dateArr = inDate.split("-");
-        console.log("zixun===="+nowDate.getFullYear()-dateArr[0]>1)
         try{
             if(nowDate.getFullYear()-dateArr[0]>1){
                 resultmsg = nowDate.getFullYear()-dateArr[0]+"年前";
@@ -101,7 +99,6 @@ var Tools = {
                     }
                 }
             }
-            console.log("zixun===="+resultmsg);
             return resultmsg;
         }catch(e){
             return pDate?pDate:null;

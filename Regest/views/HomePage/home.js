@@ -19,13 +19,17 @@ import MyListView from '../myComponent/MyListView.js';
 const ds = new ListView.DataSource({rowHasChanged:(r1,r2)=>r1!==r2});
 var DEFAULTIMG = 'https://images.unsplash.com/photo-1441742917377-57f78ee0e582?h=1024';
 var DEFAULTSHOWS = [{DEFAULTIMG},{DEFAULTIMG}];
+
 export default class home extends Component {
   constructor(props) {
       super(props);
+      var listData=[];
       this.state = {
         sliderImgs:[],
         dataSource:ds,
         page:1,
+        count:20,
+        dataSize:this.listData?this.listData.length:0,
       };
     }  
 
@@ -57,8 +61,16 @@ export default class home extends Component {
        showImages:DEFAULTSHOWS,comment:16,allNumber:17,serID:6,
       },
     ]
-
-    this.setState({dataSource:ds.cloneWithRows(data)});
+    console.log("===DLE===Page"+this.state.page);
+     if (this.state.page==1){
+          this.listData = data;
+        }else{
+          this.listData = this.listData.concat(data)
+              }
+    console.log("===DLE==="+this.state.count+'  '+this.state.dataSize)
+    console.log("===DLE===listData"+JSON.stringify(this.listData));
+    this.setState({dataSource:ds.cloneWithRows(this.listData)});
+    console.log("===DLE==="+(this.state.count>this.state.dataSize))
   }
 
 
@@ -180,14 +192,16 @@ export default class home extends Component {
             </View>
           </TouchableOpacity>
         </View>
-
         <View style={styles.center}>
+         
           <MyListView
             dataSource={this.state.dataSource}
             renderHeader={this.renderTopView.bind(this)}
             renderRow={this.renderRow.bind(this)}
             loadMore = {this.loadMore.bind(this)}
             onRefresh = {this._onRefresh.bind(this)}
+            dataSize={this.state.dataSize}
+            count={this.state.count}
             contentContainerStyle={styles.listViewStyle}/>
         </View>
 

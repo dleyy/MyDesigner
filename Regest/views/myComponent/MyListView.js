@@ -6,8 +6,9 @@
  * 资讯列表
  */
 'use strict';
+
 import Tools from '../tools';
-import {navheight,screenWidth,screenHeight,navbackground,Size} from '../constStr'
+import {navheight,screenWidth,screenHeight,Size} from '../constStr'
 import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 import React from 'react';
 import {
@@ -27,6 +28,7 @@ export default class MyListView extends React.Component {
         super(props)
         this.state = {
             isRefreshing: false,
+            loadingmore: true,
         }
 
     }
@@ -34,6 +36,7 @@ export default class MyListView extends React.Component {
     componentDidMount() {
         this.setState({
             isRefreshing: false,
+            loadingmore: true,
         })
     }
     scrollTo(obj){
@@ -45,6 +48,7 @@ export default class MyListView extends React.Component {
         })
     }
     renderFooter() {
+        console.log("===DLE111"+111+"  "+111)
         if (this.props.dataSize >= this.props.count) {
             return (
                 <View style={styles.listFooter}>

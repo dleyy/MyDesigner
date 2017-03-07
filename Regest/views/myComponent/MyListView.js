@@ -1,10 +1,3 @@
-/**
- * 公共的listview 组件
- * Created by jinwangtong on 16/3/28.
- */
-/**
- * 资讯列表
- */
 'use strict';
 
 import Tools from '../tools';
@@ -48,7 +41,6 @@ export default class MyListView extends React.Component {
         })
     }
     renderFooter() {
-        console.log("===DLE111"+111+"  "+111)
         if (this.props.dataSize >= this.props.count) {
             return (
                 <View style={styles.listFooter}>
@@ -98,8 +90,9 @@ export default class MyListView extends React.Component {
             this.setState({
                 isRefreshing:true,
             });
-            this.props.onRefresh();
             this.props.scrollTop&&this.props.scrollTop()
+            this.props.onRefresh();
+            
         }
     }
 

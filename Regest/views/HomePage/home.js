@@ -23,11 +23,11 @@ var DEFAULTSHOWS = [{DEFAULTIMG},{DEFAULTIMG}];
 export default class home extends Component {
   constructor(props) {
       super(props);
-      var listData=[];
+      this.listData=[];
+      this.myPage=1;
       this.state = {
         sliderImgs:[],
         dataSource:ds,
-        page:1,
         count:20,
         dataSize:this.listData?this.listData.length:0,
       };
@@ -61,16 +61,13 @@ export default class home extends Component {
        showImages:DEFAULTSHOWS,comment:16,allNumber:17,serID:6,
       },
     ]
-    console.log("===DLE===Page"+this.state.page);
-     if (this.state.page==1){
+    console.log("===CDMPAGE="+this.myPage);
+     if (this.myPage==1){
           this.listData = data;
         }else{
           this.listData = this.listData.concat(data)
               }
-    console.log("===DLE==="+this.state.count+'  '+this.state.dataSize)
-    console.log("===DLE===listData"+JSON.stringify(this.listData));
-    this.setState({dataSource:ds.cloneWithRows(this.listData)});
-    console.log("===DLE==="+(this.state.count>this.state.dataSize))
+    this.setState({dataSource:ds.cloneWithRows(this.listData),dataSize:this.listData.length});
   }
 
 
@@ -81,7 +78,7 @@ export default class home extends Component {
                  isLoop={this.state.sliderImgs.length==1?false:true}
                  autoPlay={true} resizeMode={Image.resizeMode.stretch}
                  corverBg={true} indicatorStyle={{alignItems:'flex-end',right:20,}}
-                 clickPage={()=>{this.state.imageClick()}}
+                 clickPage={()=>{this.imageClick()}}
                  navigator={this.props.navigator} /> 
              </View>  
   }
@@ -109,6 +106,15 @@ export default class home extends Component {
     alert("search")
   }
 
+  toDetails(rowData,i,j){
+    let navigator = this.props.navigator;
+    if (navigator){
+      navigator.push({
+        name:'ServiceDetaile',
+      })
+    };
+  }
+
   toLike(){
 
   }
@@ -116,26 +122,32 @@ export default class home extends Component {
 
   }
   _onRefresh(){
-    this.setState({
-        page:1
-    });
+    this.myPage=1;
+    console.log("===REFPAGE="+this.myPage)
     this.componentDidMount();
+  }
+
+    load(){
+      if(this.state.dataSize < this.state.count){
+      var nowPage = this.myPage+1; 
+      this.myPage = nowPage;
+      console.log("===DLE==="+this.myPage);
+    }
   }
 
     /**
      * 加载更多
      */
   loadMore(){
-    if(this.state.dataSize < this.state.count){
-        this.setState({
-            page:this.state.page+1
-        })
-        this.componentDidMount();
-    }
+    var promise = new Promise.resolve();
+    promise.then(this.load()).then(this.componentDidMount()).catch((e)=>{
+      console.log("===DLE==="+e);
+    });
   }
 
   renderRow(rowData,sectionID,rowID){
-    return <View style={styles.listitem}>
+    return  <TouchableOpacity style={styles.listitem} onPress={()=>{this.toDetails(rowData,sectionID,rowID)}}> 
+          <View>
             <View style={styles.servicetitle}>
               <TouchableOpacity style={styles.servicetitle_left} onPress={()=>this.toUser(rowData.serID)}>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -176,6 +188,7 @@ export default class home extends Component {
               </View>
               <View style={{width:screenWidth,height:10,backgroundColor:'#e8e8e8'}}/>
           </View>
+      </TouchableOpacity>
   }
 
   render() {
@@ -193,13 +206,12 @@ export default class home extends Component {
           </TouchableOpacity>
         </View>
         <View style={styles.center}>
-         
           <MyListView
             dataSource={this.state.dataSource}
             renderHeader={this.renderTopView.bind(this)}
             renderRow={this.renderRow.bind(this)}
-            loadMore = {this.loadMore.bind(this)}
-            onRefresh = {this._onRefresh.bind(this)}
+            loadMore = {()=>this.loadMore()}
+            onRefresh = {()=>this._onRefresh()}
             dataSize={this.state.dataSize}
             count={this.state.count}
             contentContainerStyle={styles.listViewStyle}/>

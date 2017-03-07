@@ -12,10 +12,17 @@ import {
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 export default class Navibar extends Component {
+  	
+  	back(){
+		let navigator = this.props.navigator;
+		if (navigator){
+			navigator.pop();
+		}
+	}
   render() {
     return (
       <View style={styles.main}>
-      	<TouchableOpacity style={styles.leftImg} onPress={this.props.back}>
+      	<TouchableOpacity style={styles.leftImg} onPress={this.props.back?this.props.back:this.back()}>
       		<Icon name="ios-arrow-back-outline" size={25} color={this.props.leftIconColor?this.props.leftIconColor:mainColor} />
       	</TouchableOpacity>
 
@@ -48,6 +55,7 @@ const styles = StyleSheet.create({
 		height:navheight,
 		justifyContent: 'center',
 		alignItems: 'center',
+		marginLeft:-50,
 	},
 	defaultStyle:{
 		color:'#0f0',

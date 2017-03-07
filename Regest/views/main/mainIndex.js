@@ -21,6 +21,7 @@ import FindPassword from '../user/findPassword';
 import reSetPassword from '../user/reseetingPassword';
 import Home from './mainActivity';
 import SysSetting from '../Mine/sysSetting';
+import ServiceDetaile from '../HomePage/serviceDetaile';
 
 var _navigator;
 export default class mainIndex extends React.Component{
@@ -55,6 +56,9 @@ export default class mainIndex extends React.Component{
                 break;
             case 'Home':
                 Component=Home;
+                break;
+            case 'ServiceDetaile':
+                Component=ServiceDetaile;
                 break;
             default:
                 Component=FirstPage;

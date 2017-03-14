@@ -18,6 +18,7 @@ import Tools from '../tools';
 import Loading from '../myComponent/loading.js';
 const HttpMoudle = require('react-native').NativeModules.HttpMoudle;
 
+var url = "http://www.freeexplorer.top/leige/public/index.php/index/users/userload/";
 
 export default class login extends Component {
 	constructor(props) {
@@ -35,20 +36,47 @@ export default class login extends Component {
 			ToastAndroid.show("输入正确的手机号码",2000);
 		}else if(this.state.password){
 			this.setState({logining:true});
-			HttpMoudle.Login(this.state.username,(rescode,arrs,message)=>{
-				if (rescode=='success'&&arrs.Password&&arrs.Password==this.state.password){
-					console.log("李磊==="+JSON.stringify(arrs))
-					Tools.setStorage('userid',arrs.ObjectId),
-					this.jumpToHome();
-					this.setState({logining:false});
-				}else if(rescode=='default'){
-					ToastAndroid.show("请检查网络"+arrs,2000);
-					this.setState({logining:false});
-				}else{
-					ToastAndroid.show("用户名或密码错误",2000);
-					this.setState({logining:false});
-				}
-			})
+			// HttpMoudle.Login(this.state.username,(rescode,arrs,message)=>{
+			// 	if (rescode=='success'&&arrs.Password&&arrs.Password==this.state.password){
+			// 		console.log("李磊==="+JSON.stringify(arrs))
+			// 		Tools.setStorage('userid',arrs.ObjectId),
+			// 		this.jumpToHome();
+			// 		this.setState({logining:false});
+			// 	}else if(rescode=='default'){
+			// 		ToastAndroid.show("请检查网络"+arrs,2000);
+			// 		this.setState({logining:false});
+			// 	}else{
+			// 		ToastAndroid.show("用户名或密码错误",2000);
+			// 		this.setState({logining:false});
+			// 	}
+			// })
+			
+			var data={
+				"phonenum":this.state.username,
+				"password":this.state.password,
+			}
+			
+			fetch(url+data, {  
+           	 method: "POST",  
+            	mode: "cors",  
+            	headers: {  
+                "Content-Type": "application/x-www-form-urlencoded"  
+           		 },    
+       		 }).then(function (res) {  
+	            if(res.ok){  
+	                res.json().then(function (json) {  
+	               		alert(JSON.stringify(json));
+	                });  
+	            }else{  
+            }  
+  
+        }).catch(function (e) {  
+            console.log("fetch fail");  
+	  
+        });  
+
+
+
 		}else{
 			ToastAndroid.show("输入密码",2000);
 		}

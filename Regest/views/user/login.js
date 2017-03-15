@@ -53,27 +53,16 @@ export default class login extends Component {
 			
 			var data={
 				"phonenum":this.state.username,
-				"password":this.state.password,
+				"password":this.state.password
 			}
 			
-			fetch(url+data, {  
-           	 method: "POST",  
-            	mode: "cors",  
-            	headers: {  
-                "Content-Type": "application/x-www-form-urlencoded"  
-           		 },    
-       		 }).then(function (res) {  
-	            if(res.ok){  
-	                res.json().then(function (json) {  
-	               		alert(JSON.stringify(json));
-	                });  
-	            }else{  
-            }  
-  
-        }).catch(function (e) {  
-            console.log("fetch fail");  
-	  
-        });  
+			Tools.postNotBase64(url,data,(ret)=>{
+				this.jumpToHome();
+				this.setState({logining:false});
+			},(err)=>{
+				ToastAndroid.show(err,2000);
+				this.setState({logining:false});
+			});
 
 
 
@@ -200,6 +189,7 @@ const styles = StyleSheet.create({
 		alignSelf:'flex-start',
 		color:mainColor,
 		fontSize:Size(20),
+		marginLeft:50,
 	}
 
 });

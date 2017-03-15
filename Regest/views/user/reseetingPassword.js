@@ -19,7 +19,7 @@ const HttpMoudle = require('react-native').NativeModules.HttpMoudle;
 export default class reseetingPassword extends Component {
 	constructor(props) {
 	  super(props);
-	
+		this.findPDUrl="http://www.freeexplorer.top/leige/public/index.php/index/users/updatepwd/";
 	  this.state = {
 	  	phoneNumber:this.props.param.phoneNumber,
 	  	password:'',
@@ -60,23 +60,40 @@ export default class reseetingPassword extends Component {
 			ToastAndroid.show("请先获取验证码",1000)
 		}else{
 		HttpMoudle.identifyCode(strs,(successMessage)=>{
-			HttpMoudle.updateUserPassword(Tools.getStorage('find_userID'),this.state.password,
-					(msg,detail)=>{
-						if (msg=='success'){
-							ToastAndroid.show("重置成功",2000)
-							 let navigator = this.props.navigator;
-							 if (navigator){
-							 	navigator.resetTo({
-									name:'Login',
-								})
-							 }
-						}else{
-							ToastAndroid.show("重置失败"+detail,2000)
-						}
+			// HttpMoudle.updateUserPassword(Tools.getStorage('find_userID'),this.state.password,
+			// 		(msg,detail)=>{
+			// 			if (msg=='success'){
+			// 				ToastAndroid.show("重置成功",2000)
+			// 				 let navigator = this.props.navigator;
+			// 				 if (navigator){
+			// 				 	navigator.resetTo({
+			// 						name:'Login',
+			// 					})
+			// 				 }
+			// 			}else{
+			// 				ToastAndroid.show("重置失败"+detail,2000)
+			// 			}
+			// 		})
+				let data={
+					"phonenum":this.state.phoneNumber,
+	        	    "password":this.state.password,
+				}
+
+			Tools.postNotBase64(this.findPDUrl,data,(ret)=>{
+				ToastAndroid.show("重置成功",2000)
+				 let navigator = this.props.navigator;
+				 if (navigator){
+				 	navigator.resetTo({
+						name:'Login',
 					})
+				 }
+			},(err)=>{
+				ToastAndroid.show(err,2000)
+			})
 		},(errorMessage)=>{
 			ToastAndroid.show("验证码验证失败,请重新获取",2000)
-		})}
+		})
+	}
 	}
 
 	back(){
@@ -222,6 +239,7 @@ const styles = StyleSheet.create({
 	titleStyle:{
 		alignSelf:'flex-start',
 		color:mainColor,
+		marginLeft:40,
 		fontSize:Size(20),
 	},
 	inputeText:{

@@ -163,6 +163,34 @@ var Tools = {
             return false;
         }
     },
+    /*
+    * 统一处理返回结果
+    */
+    doResult:function(responseText,successCallBaack, errCallBack,showokMsg){
+       console.log("====responseText==="+responseText)
+       if(!responseText){
+            return;
+       }
+        var responseData=eval("(" + responseText + ")")
+        if(responseText=="Not Found"){
+            if(errCallBack){
+                errCallBack("服务器访问失败，请稍后重试");
+            }
+        }else if (responseData.status ==1 ) {
+             if(showokMsg){
+                Toast.show(responseData.resultmsg)
+            }
+             successCallBaack(responseData.data);
+        }else {
+            if(errCallBack){
+                if(this.isDataValid(responseData.resultmsg)){
+                    errCallBack(responseData.resultmsg);
+                }else{
+                    errCallBack("数据解析错误");
+                }
+           }
+        }
+    },
     dopost:function(url, data, successCallBaack, errCallBack,showokMsg){        
         var fetchOptions = {
             method: 'POST',
@@ -248,13 +276,13 @@ var Tools = {
         }
     },
     /**
-     * scrollview 下拉刷新控制器
+     *scrollview 下拉刷新控制器
      *tintColor ColorPropType   iOS平台适用  设置加载进度指示器的颜色
      *colors [ColorPropType]   android平台适用  进行设置加载进去指示器的颜色，至少设置一种，最好可以设置4种
      *title string iOS平台适用  设置加载进度指示器下面的标题文本信息 
      *@param isRefreshing
-     * @param _onRefresh
-     * @returns {XML}
+     *@param _onRefresh
+     *@returns {XML}
      */
     intiRefresh: function (isRefreshing, _onRefresh) {
         return <RefreshControl style={Platform.OS=='ios'?{left:60}:{}}

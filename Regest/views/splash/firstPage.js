@@ -7,32 +7,37 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 
 import {navheight,screenWidth,screenHeight,MainTabHeight,Size,PhImages} from '../constStr';
+import Tools from '../tools';
 var ViewPager = require('react-native-viewpager');
-
-var IMGS = [
-  'https://images.unsplash.com/photo-1441742917377-57f78ee0e582?h=1024',
-  'https://images.unsplash.com/photo-1441716844725-09cedc13a4e7?h=1024',
-  'https://images.unsplash.com/photo-1441126270775-739547c8680c?h=1024',
-  'https://images.unsplash.com/photo-1440964829947-ca3277bd37f8?h=1024',
-  'https://images.unsplash.com/photo-1440847899694-90043f91c7f9?h=1024'
-];
-var count = 0;
 
 export default class firstPage extends Component {
   constructor(props) {
         super(props);
-        var dataSource = new ViewPager.DataSource({
+        this.dataSource = new ViewPager.DataSource({
             pageHasChanged: (p1, p2) => p1 !== p2,
         });
         // 实际的DataSources存放在state中
+        this.imgUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/leadimages/";
         this.state = {
-            dataSource: dataSource.cloneWithPages(IMGS),
+            dataSource:this.dataSource,
             page: 0
         }
     }
+  componentDidMount() {
+         Tools.get(this.imgUrl,(ret)=>{
+          console.log("DLE===Img"+JSON.stringify(ret.images));
+          this.setState({
+            dataSource:this.dataSource.cloneWithPages(ret.images),
+            page:0,
+          }) 
+         },(err)=>{
+          ToastAndroid.show(err,2000);
+         })
+  } 
 
   gotoSecend(){
     var navigator = this.props.navigator;

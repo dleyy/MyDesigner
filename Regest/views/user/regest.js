@@ -23,6 +23,7 @@ export default class regest extends Component{
 
 	constructor(props) {
 	  super(props);
+	  this.regestUrl="http://www.freeexplorer.top/leige/public/index.php/index/users/registe/";
 	  this.state = {
 	  	name:'',
 	  	phoneNumber:'',
@@ -113,19 +114,22 @@ export default class regest extends Component{
 				'password':this.state.password,
 				'code':this.state.identify,
 			};
+			let data={
+				"nickname":this.state.name,
+				"phonenum":this.state.phoneNumber,
+		     	"password":this.state.password,    
+			}
 
 			HttpMoudle.identifyCode(strs,(successMsg)=>{
-					HttpMoudle.Regest(strs,(msg)=>{
-						if (msg){
-								this.setState({regestting:false});
-				 				Tools.setStorage('userid',msg),
-				 				ToastAndroid.show("注册成功！",2000);
-				 				this.jumpToLogin();		 							 			
-				 			}else{
-				 				this.setState({regestting:false});
-				 				ToastAndroid.show("手机号已注册",2000);}
-							})},
-					(errorMsg)=>{
+				Tools.postNotBase64(this.regestUrl,data,(ret)=>{
+					ToastAndroid.show("注册成功",2000)
+					this.jumpToLogin();
+					this.setState({regestting:false});
+				},(err)=>{
+					ToastAndroid.show(err,2000);
+					this.setState({regestting:false});
+				})
+			},(errorMsg)=>{
 						this.setState({regestting:false});
 						ToastAndroid.show("验证码验证失败",2000);
 					}
@@ -247,6 +251,7 @@ const styles = StyleSheet.create({
 	titleStyle:{
 		alignSelf:'flex-start',
 		color:mainColor,
+		marginLeft:50,
 		fontSize:Size(20),
 	},
 	content:{

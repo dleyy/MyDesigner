@@ -36,11 +36,17 @@ export default class serviceDetaile extends Component {
   imageClick(){
 
   }
+  back(){
+    let navigator=this.props.navigator
+    if (navigator){
+      navigator.pop();
+    }
+  } 
 
   render() {
     return (
       <View style={styles.content}>
-      	<Navibar titleText={this.state.serviceName} titleStyle={styles.titlestyle}/>
+      	<Navibar titleText={this.state.serviceName} titleStyle={styles.titlestyle} back={()=>{this.back()}}/>
       	<View style={styles.center}>
       		<View style={{width:screenWidth,height:140}}>
               <TopViewPager

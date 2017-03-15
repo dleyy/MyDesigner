@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ListView,
   Image,
+  ToastAndroid,
 } from 'react-native';
 import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';
@@ -23,9 +24,12 @@ var DEFAULTSHOWS = [{DEFAULTIMG},{DEFAULTIMG}];
 export default class home extends Component {
   constructor(props) {
       super(props);
+      this.imgUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/leadimages/";
+      this.infoUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/services/";
       this.listData=[];
       this.myPage=1;
       this.state = {
+        pagesize:5,
         sliderImgs:[],
         dataSource:ds,
         count:20,
@@ -34,40 +38,30 @@ export default class home extends Component {
     }  
 
   componentDidMount() {
-    var Imgs=[
-      'https://images.unsplash.com/photo-1441742917377-57f78ee0e582?h=1024',
-      'https://images.unsplash.com/photo-1441716844725-09cedc13a4e7?h=1024',
-      'https://images.unsplash.com/photo-1441126270775-739547c8680c?h=1024',
-      'https://images.unsplash.com/photo-1440964829947-ca3277bd37f8?h=1024',
-      'https://images.unsplash.com/photo-1440847899694-90043f91c7f9?h=1024'
-    ]
-    this.setState({sliderImgs:Imgs})
-
-    var data=[
-      {orderId:1,name:'张三',userhead:DEFAULTIMG,title:'看小孩',startTime:'2017-01-02 13:55:44',
-       content:'代看护小孩',price:'20.00/小时',like:10,dislike:3,
-       showImages:DEFAULTSHOWS,comment:6,allNumber:14,serID:3,
-      },
-      {orderId:2,name:'李四',userhead:DEFAULTIMG,title:'买东西',startTime:'2017-02-04 13:55:44',
-       content:'代买，所有东西',price:'20.00/次',like:18,dislike:13,
-       showImages:DEFAULTSHOWS,comment:46,allNumber:34,serID:4,
-      },
-      {orderId:3,name:'王五',userhead:DEFAULTIMG,title:'买买买买买',startTime:'2016-09-13 13:55:44',
-       content:'代买东西代买东西代买东西代买东西代买东西代买东西代买东西代买东西代买东西代买东西代买东西',price:'20.00/次',like:120,dislike:33,
-       showImages:DEFAULTSHOWS,comment:36,allNumber:42,serID:5,
-      },
-      {orderId:4,name:'赵六',userhead:DEFAULTIMG,title:'修家电',startTime:'2016-06-14 13:55:44',
-       content:'所有家电，提前预约',price:'100.00/件',like:100,dislike:31,
-       showImages:DEFAULTSHOWS,comment:16,allNumber:17,serID:6,
-      },
-    ]
-    console.log("===CDMPAGE="+this.myPage);
-     if (this.myPage==1){
-          this.listData = data;
+    Tools.get(this.imgUrl,(ret)=>{
+      console.log("DLE===Img"+JSON.stringify(ret.images));
+      this.setState({sliderImgs:ret.images})
+      },(err)=>{
+        ToastAndroid.show(err,2000);
+      })
+    let data={
+      "pagesize":this.state.pagesize,
+      "page":this.myPage
+    };
+    Tools.postNotBase64(this.infoUrl,data,(ret)=>{
+      console.log("DLE===ret"+JSON.stringify(ret))
+      this.setState({count:ret.total})
+      if (this.myPage==1){              
+          this.listData = ret.data;
         }else{
-          this.listData = this.listData.concat(data)
-              }
+          this.listData = this.listData.concat(ret.data)
+        }
     this.setState({dataSource:ds.cloneWithRows(this.listData),dataSize:this.listData.length});
+    },(err)=>{
+      ToastAndroid.show(err,2000);  
+    });
+    
+     
   }
 
 
@@ -84,9 +78,10 @@ export default class home extends Component {
   }
 
   renderCenterImgs(rowData){
+    console.log("DLE===="+JSON.stringify(rowData.showImages))
     if (rowData.showImages){
       return rowData.showImages.map((item,i)=>{
-      return <Image key={i} style={styles.centerImg} source={{uri:item.DEFAULTIMG}}/>
+      return <Image key={i} style={styles.centerImg} source={{uri:item}}/>
       });
     }else{
       return null;

@@ -37,20 +37,20 @@ export default class findPassword extends Component {
     if (!(/^1[34875]\d{9}$/.test(this.state.phoneNumber))){
       ToastAndroid.show("输入正确的手机号码",2000);
     }else{
-      this.setState({
-        logining:true,
-      })
-
-      HttpMoudle.Login(this.state.phoneNumber,(codeId,Arrs,msg)=>{
-        if (codeId=='success'&&JSON.stringify(Arrs).length>10){
-          Tools.setStorage('find_userID',Arrs.ObjectId),
-          this.setState({logining:false})
-          this.jumpToNext();
-        }else{
-          this.setState({logining:false})
-          ToastAndroid.show("手机号暂未注册",1000);
-        }
-      });
+      // this.setState({
+      //   logining:true,
+      // })
+      this.jumpToNext();
+      // HttpMoudle.Login(this.state.phoneNumber,(codeId,Arrs,msg)=>{
+      //   if (codeId=='success'&&JSON.stringify(Arrs).length>10){
+      //     Tools.setStorage('find_userID',Arrs.ObjectId),
+      //     this.setState({logining:false})
+      //     this.jumpToNext();
+      //   }else{
+      //     this.setState({logining:false})
+      //     ToastAndroid.show("手机号暂未注册",1000);
+      //   }
+      // });
     }
   }
 
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
 		alignSelf:'flex-start',
 		color:mainColor,
 		fontSize:Size(20),
+    marginLeft:40,
 	},
   inpute_item:{
     width:screenWidth,

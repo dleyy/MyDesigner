@@ -98,7 +98,12 @@ export default class home extends Component {
   }
 
   toSearch(){
-    alert("search")
+    let navigator = this.props.navigator;
+    if (navigator){
+      navigator.push({
+        name:'Search',
+      })
+    }
   }
 
   toDetails(rowData,i,j){

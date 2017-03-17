@@ -134,7 +134,7 @@ export default class search extends Component {
       <View style={styles.content}>
       	<View style={styles.title}>
           <TouchableOpacity onPress={()=>this.back()}> 
-            <Icon name="ios-arrow-back-outline" size={25} color={secondColor}/>
+            <Icon name="ios-arrow-dropleft-outline" size={25} color={secondColor}/>
           </TouchableOpacity>
 
           <TextInput

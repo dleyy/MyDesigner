@@ -23,7 +23,7 @@ export default class Navibar extends Component {
     return (
       <View style={styles.main}>
       	<TouchableOpacity style={styles.leftImg} onPress={this.props.back?this.props.back:this.back()}>
-      		<Icon name="ios-arrow-back-outline" size={25} color={this.props.leftIconColor?this.props.leftIconColor:mainColor} />
+      		<Icon name="ios-arrow-dropleft-outline" size={25} color={this.props.leftIconColor?this.props.leftIconColor:mainColor} />
       	</TouchableOpacity>
 
       	<View style={styles.centercontent}>

@@ -63,7 +63,12 @@ export default class mine extends Component {
   }
 
   toUserInfo(){
-    alert("username:"+this.state.username)
+    let navigator = this.props.navigator;
+    if (navigator){
+      navigator.push({
+        name:'UserSetting',
+      })
+    }
   }
 
   renderRow(rowData,sectionID,rowID){

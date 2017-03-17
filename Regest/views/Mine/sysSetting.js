@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
 		alignSelf:'flex-start',
 		color:mainColor,
 		fontSize:Size(20),
+		marginLeft:50,
 	},
 	content:{
 		flex:1,

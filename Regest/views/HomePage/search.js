@@ -28,13 +28,10 @@ export default class search extends Component {
     };
   }
 
-  doSearch(){
-    alert("serch")
-  }
 
-  isExist(item){
+  isExist(name){
     for (var i = 0; i <this.historyData.length; i++) {
-      if(this.historyData[i].name==item.name){
+      if(this.historyData[i].name==name){
         return i;
         break;
       }
@@ -42,9 +39,9 @@ export default class search extends Component {
     return -1;   
   }
 
-  itemSearch(item){
-    if (this.isExist(item)==-1){
-      this.historyData.push({"name":item.name});  
+  itemSearch(name){
+    if (this.isExist(name)==-1){
+      this.historyData.push({"name":name});  
     }
 
     this.setState({historyData:this.historyData})
@@ -52,12 +49,21 @@ export default class search extends Component {
     Tools.setStorage('srhHistory',JSON.stringify(this.historyData));
   }
 
+  cleanHistory(){
+    Tools.removeStorage('srhHistory');
+    this.historyData=[];
+    this.setState({
+      historyData:[],
+    })
+  }
+
+
   renderHistoryData(){
     if (this.state.historyData){
-      return <ScrollView> 
+      return <ScrollView style={{marginBottom:10}}> 
               <View style={styles.historyView}>
                 {this.state.historyData.map((item,key)=>{
-                  return <TouchableOpacity style={styles.historyItem} onPress={()=>this.itemSearch(item)} key={key}>
+                  return <TouchableOpacity style={styles.historyItem} onPress={()=>this.itemSearch(item.name)} key={key}>
                             <Text>{item.name}</Text>
                          </TouchableOpacity>}
                 )}
@@ -72,7 +78,7 @@ export default class search extends Component {
     if (this.state.groomData){
       return <View style={styles.groomStyle}>
               {this.state.groomData.map((item,key)=>{
-                  return <TouchableOpacity onPress={()=>this.itemSearch(item)} style={styles.itemStyle} key={key}>
+                  return <TouchableOpacity onPress={()=>this.itemSearch(item.name)} style={styles.itemStyle} key={key}>
                             <Text>{item.name}</Text>
                          </TouchableOpacity>}
               )}
@@ -90,6 +96,7 @@ export default class search extends Component {
   }
 
   componentDidMount() {
+
    Tools.getStorage('srhHistory',(ret)=>{
       if (Tools.isDataValid(ret)){
         this.historyData = JSON.parse(ret);
@@ -99,7 +106,6 @@ export default class search extends Component {
         this.setState({historyData:this.historyData});     
       }
     });
-
 
     var data=[{"name":"看电影"},{"name":"修家电"},{"name":"陪聊天"},
               {"name":"家教"},{"name":"陪吃饭"},{"name":"美容"}];
@@ -111,7 +117,7 @@ export default class search extends Component {
       <View style={styles.content}>
       	<View style={styles.title}>
           <TouchableOpacity onPress={()=>this.back()}> 
-            <Icon name="ios-arrow-back-outline" size={20} color={secondColor}/>
+            <Icon name="ios-arrow-back-outline" size={25} color={secondColor}/>
           </TouchableOpacity>
 
           <TextInput
@@ -123,7 +129,7 @@ export default class search extends Component {
             onChangeText={(key) => this.setState({keywords:key})}
             value={this.state.keywords}/>
 
-          <TouchableOpacity onPress={()=>{this.doSearch()}}>
+          <TouchableOpacity onPress={()=>{this.itemSearch(this.state.keywords)}}>
             <Text style={styles.searchText}>搜索</Text>
           </TouchableOpacity>
       	</View>
@@ -140,6 +146,11 @@ export default class search extends Component {
           </View>        
 
           {this.renderHistoryData()}
+
+          <View style={{width:screenWidth,marginBottom:10,alignItems:'center',height:100}}>
+            <Button Click={()=>{this.cleanHistory()}} bgcolor={'#FB503E'} contentText={'清除记录'}/>
+          </View>
+
         </View>
       </View>
     );
@@ -160,9 +171,12 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems: 'center',
     marginTop:5,
-    paddingLeft:10,
-    paddingRight:10,
+    paddingLeft:15,
+    paddingRight:15,
 	},
+  searchText:{
+
+  },
   inputeText:{
     flex:1,
   },

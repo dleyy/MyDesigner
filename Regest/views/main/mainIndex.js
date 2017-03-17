@@ -23,6 +23,7 @@ import Home from './mainActivity';
 import SysSetting from '../Mine/sysSetting';
 import ServiceDetaile from '../HomePage/serviceDetaile';
 import Search from '../HomePage/search';
+import SearchDetail from '../HomePage/searchDetail';
 
 var _navigator;
 export default class mainIndex extends React.Component{
@@ -63,6 +64,9 @@ export default class mainIndex extends React.Component{
                 break;
             case 'Search':
                 Component=Search;
+                break;
+            case 'SearchDetail':
+                Component=SearchDetail;
                 break;
             default:
                 Component=FirstPage;

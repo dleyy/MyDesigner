@@ -16,6 +16,7 @@ var navbackground="#353232";
 var lineColor="#ededed";
 var appName=" ";
 var mainColor="#32B165";
+// var mainColor="#FB503E";
 var secondColor='rgb(96,108,121)';
 var topheight=(Platform.OS ==='android')?22:30;
 

@@ -8,6 +8,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  ToastAndroid
 } from 'react-native';
 
 import Navibar from '../myComponent/Navibar.js';
@@ -40,13 +41,29 @@ export default class search extends Component {
   }
 
   itemSearch(name){
-    if (this.isExist(name)==-1){
-      this.historyData.push({"name":name});  
+    if(name){
+      if (this.isExist(name)==-1){
+        this.historyData.push({"name":name});  
+      }
+      this.setState({historyData:this.historyData})
+      Tools.setStorage('srhHistory',JSON.stringify(this.historyData));
+      this.jumpToSearchDetail(name);
+    }else{
+      ToastAndroid.show("关键字不能为空！",2000);
     }
+  }
 
-    this.setState({historyData:this.historyData})
-
-    Tools.setStorage('srhHistory',JSON.stringify(this.historyData));
+  //跳转至搜索详情
+  jumpToSearchDetail(name){
+    let navigator = this.props.navigator;
+    if (navigator){
+      navigator.push({
+        name:'SearchDetail',
+        param: {                 
+          keywords:name,
+        }
+      })
+    }
   }
 
   cleanHistory(){

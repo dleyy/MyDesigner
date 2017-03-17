@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     borderRightWidth:0.25,
     borderBottomWidth:0.5,
     borderLeftWidth:0.5,
-    borderColor:mainColor,
+    borderColor:'#888',
     height:screenWidth/3,
   }
 });

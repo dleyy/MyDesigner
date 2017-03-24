@@ -10,6 +10,7 @@ import {
 
 import NavBar from '../myComponent/Navibar';
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
+import ImagePicker from '../../node_modules/react-native-image-picker';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Button from '../myComponent/Button.js';
 
@@ -32,8 +33,42 @@ export default class userSeeting extends Component {
 	}
 
 	changeUserHeard(){
+		var options = {
+	   title:'上传',
+	   customButtons: [
+	     {name:'cm',title:'Choose Photo from Carmaral'},
+	     {name:'fb',title:'Choose Photo from Carmaral'},
+	   ],
+	   storageOptions: {
+	     skipBackup: true,
+	     path: 'images'
+	    }
+	   };
 
-	}
+	   ImagePicker.showImagePicker(options, (response) => {
+	   console.log('Response = ', response);
+
+	   if (response.didCancel) {
+	     console.log('User cancelled image picker');
+	   }
+	   else if (response.error) {
+	     console.log('ImagePicker Error: ', response.error);
+	   }
+	   else if (response.customButton) {
+	     console.log('User tapped custom button: ', response.customButton);
+	   }
+	   else {
+	     let source = { uri: response.uri };
+
+	     // You can also display the image using data:
+	     // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+	     this.setState({
+	      avatarSource: source
+	     });
+	   }
+	});
+}
 
 	inSure:{
 
@@ -51,7 +86,7 @@ export default class userSeeting extends Component {
 	    				<Text style={styles.userIcon}>头像</Text>
 	    				<TouchableOpacity onPress={()=>{this.changeUserHeard()}} style={{flex:1}} >
 	    					<View style={styles.itemClick}>
-	    						<Image style={styles.userPic} source={{uri:this.state.userHeard?this.state.userHeard:this.defaultUserIcon}}/>
+	    						<Image style={styles.userPic} source={this.state.avatarSource}/>
 	    						<Icon name='ios-arrow-forward-outline' size={20} color={mainColor} />
 	    					</View>
 	    				</TouchableOpacity>

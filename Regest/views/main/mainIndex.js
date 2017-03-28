@@ -14,16 +14,27 @@ import {
     ToastAndroid,
 } from 'react-native';
 
+//闪屏页。首页
 import FirstPage from '../splash/firstPage';
+//注册
 import Regest from '../user/regest';
+//登录
 import Login from '../user/login';
+//找回密码（输入手机号码）
 import FindPassword from '../user/findPassword';
+//重置密码
 import reSetPassword from '../user/reseetingPassword';
+//主页
 import Home from './mainActivity';
+//系统设置
 import SysSetting from '../Mine/sysSetting';
+//服务详情
 import ServiceDetaile from '../HomePage/serviceDetaile';
+//搜索
 import Search from '../HomePage/search';
+//搜索详情
 import SearchDetail from '../HomePage/searchDetail';
+//个人设置
 import UserSetting from '../Mine/userSeeting';
 
 var _navigator;

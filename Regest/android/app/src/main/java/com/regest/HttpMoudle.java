@@ -23,18 +23,11 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.regest.Moudle.User;
+
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;
 import cn.smssdk.EventHandler;
 import cn.smssdk.OnSendMessageHandler;
 import cn.smssdk.SMSSDK;
@@ -51,7 +44,6 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
     public HttpMoudle(ReactApplicationContext reactContext) {
         super(reactContext);
         reactContext.addActivityEventListener(this);
-        Bmob.initialize(reactContext, "ad3dec8d6a119776a9467485425a8e92");
         //SMSSDK.initSDK(getReactApplicationContext(),"1af4f2ab64f47","5fde4e6949cf21487c918f62734c3f9c");
     }
 
@@ -59,39 +51,6 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
     public String getName() {
         return "HttpMoudle";
 
-    }
-
-    /**
-     * 登录接口
-     * @param phoneNumber   电话号码
-     * @param cal           回调函数
-     */
-    @ReactMethod
-    public void Login(String phoneNumber,Callback cal){
-        BmobQuery<User> user = new BmobQuery<>();
-        user.addWhereEqualTo("phoneNum",phoneNumber);
-        user.setLimit(1);
-        user.findObjects(new FindListener<User>() {
-            @Override
-            public void done(List<User> list, BmobException e) {
-                if (e==null){
-                    if(list.isEmpty()){
-                        mcallback.invoke("success","","");
-                    }else {
-                        WritableMap map = Arguments.createMap();
-                        map.putString("Password",list.get(0).getPassword());
-                        map.putString("ObjectId",list.get(0).getObjectId());
-                        map.putString("NickName",list.get(0).getNickName());
-                        map.putBoolean("Qualification",list.get(0).getQualification());
-                        map.putString("City",list.get(0).getCity());
-                        mcallback.invoke("success",map,"");
-                    }
-                }else{
-                    mcallback.invoke("default",e.getMessage(),"");
-                }
-            }
-        });
-        mcallback = cal;
     }
 
 
@@ -128,38 +87,6 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
 
 
     /**
-     *注册
-     *
-     */
-    public void insertInToServices(User user, Callback callback){
-        user.save(new SaveListener<String>() {
-            @Override
-            public void done(String s, BmobException e) {
-                mcallback.invoke(s);
-            }
-        });
-        mcallback=callback;
-    }
-
-    /**
-     * 注册接口；
-     * @param map
-     * @param callback
-     */
-    @ReactMethod
-    public void Regest(ReadableMap map, Callback callback){
-        User user = new User();
-        user.setCid("");
-        user.setCredit(0);
-        user.setQualification(false);
-        user.setCidimage("");
-        user.setNickName(map.getString("name"));
-        user.setPhoneNum(map.getString("phoneNumber"));
-        user.setPassword(map.getString("password"));
-        insertInToServices(user,callback);
-    }
-
-    /**
      * 发送短信验证码接口；
      * @param phoneNumber
      * @param successcallback
@@ -193,61 +120,6 @@ public class HttpMoudle extends ReactContextBaseJavaModule implements ActivityEv
         SMSSDK.registerEventHandler(eventHandler);
     }
 
-    /**
-     * 找回密码
-     * @param objectId      用户ID
-     * @param newPassword   新密码
-     * @param cal           回调
-     */
-    @ReactMethod
-    public void updateUserPassword(String objectId,String newPassword,Callback cal){
-        User user = new User();
-        user.setPassword(newPassword);
-        user.update(objectId, new UpdateListener() {
-            @Override
-            public void done(BmobException e) {
-                if (e==null) {
-                    mcallback.invoke("success","");
-                    Log.i("dleyy","更新成功");
-                }else{
-                    Log.i("dleyy","更新失败");
-                    mcallback.invoke("error",e.getMessage());
-                }
-            }
-        });
-        mcallback = cal;
-    }
-
-    /**
-     * 获取用户信息
-     * @param phoneNumber       电话号码
-     * @param successCallback   成功回调
-     * @param errorCallback     失败回调
-     */
-    @ReactMethod
-    public void seach(String phoneNumber, final Callback successCallback, final Callback errorCallback){
-        final BmobQuery<User> user = new BmobQuery<>();
-        user.addWhereEqualTo("phoneNum",phoneNumber);
-        user.setLimit(1);
-        sCallback = successCallback;
-        eCallback = errorCallback;
-        user.findObjects(new FindListener<User>() {
-            @Override
-            public void done(List<User> list, BmobException e) {
-                if (e == null) {
-                    if (list.isEmpty()) {
-                        errorCallback.invoke("获取信息失败");
-                    } else {
-                        WritableArray map = Arguments.createArray();
-                        map = (WritableArray) list.get(0);
-                        successCallback.invoke(map);
-                    }
-                } else {
-                    errorCallback.invoke(e.getMessage());
-                }
-            }
-        });
-    }
 
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {

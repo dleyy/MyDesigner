@@ -99,7 +99,9 @@ export default class reseetingPassword extends Component {
 	back(){
 		let navigator = this.props.navigator;
 		if (navigator){
-			navigator.pop();
+			navigator.pop({
+				title:this.props.title?this.props.title:''
+			});
 			}
 	}
 
@@ -156,7 +158,7 @@ export default class reseetingPassword extends Component {
      		<Navibar 
       			back={()=>{this.back()}}
     			titleStyle={styles.titleStyle}
-    			titleText={'找回密码'}/>
+    			titleText={this.props.param.title?this.props.param.title:'找回密码'}/>
     		<View style={{width:screenWidth,height:40,backgroundColor:'#c4c4c4'}} />
 
     		<View style={styles.inpute}>

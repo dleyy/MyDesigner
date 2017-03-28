@@ -13,6 +13,8 @@ import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 import ImagePicker from '../../node_modules/react-native-image-picker';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Button from '../myComponent/Button.js';
+import AlertDialog from '../myComponent/AlertDialog';
+import Alert from '../myComponent/Alert';
 
 export default class userSeeting extends Component {
 	constructor(props) {
@@ -21,7 +23,11 @@ export default class userSeeting extends Component {
 		this.defaultUserIcon="https://images.unsplash.com/photo-1441742917377-57f78ee0e582?h=1024";	
 	   this.state = {
 	   	userHeard:'',
-	   	nickName:'dleyy'
+	   	nickName:'dleyy',
+	   	showDialog:false,
+	   	AlertTitle:'',
+	   	password:'',
+	   	sex:'',
 	   };
 	}
 
@@ -32,48 +38,107 @@ export default class userSeeting extends Component {
 		}
 	}
 
-	changeUserHeard(){
-		var options = {
-	   title:'上传',
-	   customButtons: [
-	     {name:'cm',title:'Choose Photo from Carmaral'},
-	     {name:'fb',title:'Choose Photo from Carmaral'},
-	   ],
-	   storageOptions: {
-	     skipBackup: true,
-	     path: 'images'
-	    }
-	   };
+	//显示选择框
+	showDialog(){
+		this.setState({
+			AlertTitle:'输入昵称',
+			showDialog:!this.state.showDialog
+		})
+	}
 
+
+	renderAlertDialog(){
+		if (!this.state.showDialog){
+			return null;
+		}else{
+			if (this.state.AlertTitle=='输入昵称') {
+			return <AlertDialog
+						title={this.state.AlertTitle}
+						cancle={()=>{this.setState({showDialog:false})}}
+						changeText={(name)=>this.changeText(name)}/>
+			}else{
+				return <AlertDialog
+						title={this.state.AlertTitle}
+						cancle={()=>{this.setState({showDialog:false})}}
+						changeText={(password)=>{this.setState({password:password,showDialog:false})}}/>
+					
+			}
+		}
+	}
+
+
+	changeText(name){
+		if (name=='') {
+			this.setState({
+				showDialog:false,
+			})
+		}else{
+			this.setState({
+				nickName:name,
+				showDialog:false
+			})
+		}
+	}
+
+	//更新信息到服务器
+	Update(){
+
+	}
+
+	changeSex(){
+		this.alertShow.show("选择性别","男",'女',this)
+	}
+
+	changePassword(){
+		let navigator = this.props.navigator;
+		if (navigator) {
+			navigator.push({
+				name:'FindPassword',
+				title:'修改密码',
+			})
+		}
+	}
+
+	changeUserHeard(){
+	 var options = {
+	    //底部弹出框选项
+	    title:'请选择',
+	    cancelButtonTitle:'取消',
+	     takePhotoButtonTitle: '',
+	    chooseFromLibraryButtonTitle:'从相册选择',
+	    quality:0.75,
+	    mediaType: 'photo',
+	    allowsEditing:true,
+	    noData:false,
+	    storageOptions: {
+	        skipBackup: true,
+	        path:'images'
+	    }
+	}
 	   ImagePicker.showImagePicker(options, (response) => {
 	   console.log('Response = ', response);
 
 	   if (response.didCancel) {
 	     console.log('User cancelled image picker');
+	     return;
 	   }
 	   else if (response.error) {
 	     console.log('ImagePicker Error: ', response.error);
 	   }
 	   else if (response.customButton) {
 	     console.log('User tapped custom button: ', response.customButton);
+
 	   }
 	   else {
 	     let source = { uri: response.uri };
-
-	     // You can also display the image using data:
-	     // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-
 	     this.setState({
 	      avatarSource: source
 	     });
 	   }
 	});
 }
-
 	inSure:{
-
 	}
-
    render() {
     	return (
       	<View style={styles.container}>
@@ -94,7 +159,7 @@ export default class userSeeting extends Component {
 
 	    			<View style={styles.infoView}>
 	    				<Text style={styles.userIcon}>昵称</Text>
-	    				<TouchableOpacity onPress={()=>{this.changeUserHeard()}} style={{flex:1}}>
+	    				<TouchableOpacity onPress={()=>{this.showDialog()}} style={{flex:1}}>
 	    					<View style={styles.itemClick}>
 	    						<Text style={{marginRight:10}}>{this.state.nickName}</Text>
 	    						<Icon name='ios-arrow-forward-outline' size={20} color={mainColor} />
@@ -103,16 +168,34 @@ export default class userSeeting extends Component {
 	    			</View>
 
 	    			<View style={styles.infoView}>
-	    				<Text style={styles.userIcon}>密码修改</Text>
-	    				<TouchableOpacity onPress={()=>{this.changeUserHeard()}} style={{flex:1}}>
+	    				<Text style={styles.userIcon}>性别</Text>
+	    				<TouchableOpacity onPress={()=>{this.changeSex()}} style={{flex:1}}>
 	    					<View style={styles.itemClick}>
+	    						<Text style={{marginRight:10}}>{this.state.sex}</Text>
 	    						<Icon name='ios-arrow-forward-outline' size={20} color={mainColor} />
 	    					</View>
 	    				</TouchableOpacity>
 	    			</View>
 
+	    			<View style={styles.infoView}>
+	    				<Text style={styles.userIcon}>密码修改</Text>
+	    				<TouchableOpacity onPress={()=>{this.changePassword()}} style={{flex:1}}>
+	    					<View style={styles.itemClick}>
+	    						<Icon name='ios-arrow-forward-outline' size={20} color={mainColor} />
+	    					</View>
+	    				</TouchableOpacity>
+	    			</View>
 	    		</View>
-      			
+
+	    		<View style={{justifyContent:'center',margin:10,alignItems:'center'}}>
+	    			<Button 
+	    				contentText={'确认修改'}
+	    				Click={()=>this.Update()}
+	    				bgcolor={mainColor}/>
+	    		</View>
+
+	    		{this.renderAlertDialog()}
+      				    		<Alert ref={(o)=>this.alertShow=o}/>
       	</View>
     	);
   	}

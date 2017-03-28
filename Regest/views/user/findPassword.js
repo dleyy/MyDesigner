@@ -80,7 +80,7 @@ export default class findPassword extends Component {
       	<Navibar 
       		back={()=>{this.back()}}
     		  titleStyle={styles.titleStyle}
-    		  titleText={'找回密码'}/>
+    		  titleText={this.props.title?this.props.title:'找回密码'}/>
 
         <View style={styles.inpute_item}>
 

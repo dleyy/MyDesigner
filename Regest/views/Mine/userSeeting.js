@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 
 import NavBar from '../myComponent/Navibar';
@@ -15,19 +16,22 @@ import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../cons
 import Button from '../myComponent/Button.js';
 import AlertDialog from '../myComponent/AlertDialog';
 import Alert from '../myComponent/Alert';
+import Tools from '../tools';
+import Loading from '../myComponent/loading';
 
 export default class userSeeting extends Component {
 	constructor(props) {
 	   super(props);
-		
-		this.defaultUserIcon="https://images.unsplash.com/photo-1441742917377-57f78ee0e582?h=1024";	
+	   this.postUrl="http://www.freeexplorer.top/leige/public/index.php/index/users/updateinfo";	
+	   this.defaultUserIcon="https://images.unsplash.com/photo-1441742917377-57f78ee0e582?h=1024";	
 	   this.state = {
-	   	userHeard:'',
-	   	nickName:'dleyy',
+	   	userHeard:this.props.param.userheard?this.props.param.userheard:this.defaultUserIcon,
+	   	nickName:this.props.param.nickname?this.props.param.nickname:'',
 	   	showDialog:false,
-	   	AlertTitle:'',
+	   	AlertTitle:'', 
 	   	password:'',
-	   	sex:'',
+	   	sex:this.props.param.sex,
+	   	loadingWait:false,
 	   };
 	}
 
@@ -71,21 +75,50 @@ export default class userSeeting extends Component {
 		if (name=='') {
 			this.setState({
 				showDialog:false,
+				loadingWait:false,
 			})
 		}else{
 			this.setState({
 				nickName:name,
-				showDialog:false
+				showDialog:false,
+				loadingWait:false,
 			})
 		}
 	}
 
 	//更新信息到服务器
 	Update(){
-
+		this.setState({
+			loadingWait:true,
+		})
+		Tools.getStorage('phonenum',(ret)=>{
+			var picDta={
+				'image':this.state.heardImage,
+				'phonenum':ret,
+				'nickname':this.state.nickName,
+				'sex':this.state.sex
+			}
+			if (Tools.isDataValid(picDta.phonenum)){
+				Tools.postNotBase64(this.postUrl, picDta,(res)=>{
+		               		ToastAndroid.show("信息修改成功!",2000)
+		               		this.setState({
+		               			loadingWait:false
+		               		})
+		           		},(err)=>{
+		               	console.log("postImage=="+JSON.stringify(err))
+		               	ToastAndroid.show(err,2000)
+		               	this.setState({
+		                   		loadingWait:false
+		               	})
+		               })
+			}else{
+				ToastAndroid.show("登录失效",2000)
+			}
+	})
 	}
 
 	changeSex(){
+		this.setState({loadingWait:false})
 		this.alertShow.show("选择性别","男",'女',this)
 	}
 
@@ -100,43 +133,15 @@ export default class userSeeting extends Component {
 	}
 
 	changeUserHeard(){
-	 var options = {
-	    //底部弹出框选项
-	    title:'请选择',
-	    cancelButtonTitle:'取消',
-	     takePhotoButtonTitle: '',
-	    chooseFromLibraryButtonTitle:'从相册选择',
-	    quality:0.75,
-	    mediaType: 'photo',
-	    allowsEditing:true,
-	    noData:false,
-	    storageOptions: {
-	        skipBackup: true,
-	        path:'images'
-	    }
+		Tools.chooseImg((resData,BaseUrl)=>{
+			this.setState({
+				avatarSource:{uri:resData.uri},
+				heardImage:BaseUrl.uri,
+			})
+		},(err)=>{
+			ToastAndroid.show(err,2000);
+		})
 	}
-	   ImagePicker.showImagePicker(options, (response) => {
-	   console.log('Response = ', response);
-
-	   if (response.didCancel) {
-	     console.log('User cancelled image picker');
-	     return;
-	   }
-	   else if (response.error) {
-	     console.log('ImagePicker Error: ', response.error);
-	   }
-	   else if (response.customButton) {
-	     console.log('User tapped custom button: ', response.customButton);
-
-	   }
-	   else {
-	     let source = { uri: response.uri };
-	     this.setState({
-	      avatarSource: source
-	     });
-	   }
-	});
-}
 	inSure:{
 	}
    render() {
@@ -151,7 +156,7 @@ export default class userSeeting extends Component {
 	    				<Text style={styles.userIcon}>头像</Text>
 	    				<TouchableOpacity onPress={()=>{this.changeUserHeard()}} style={{flex:1}} >
 	    					<View style={styles.itemClick}>
-	    						<Image style={styles.userPic} source={this.state.avatarSource}/>
+	    						<Image style={styles.userPic} source={this.state.avatarSource?this.state.avatarSource:{uri:this.state.userHeard}}/>
 	    						<Icon name='ios-arrow-forward-outline' size={20} color={mainColor} />
 	    					</View>
 	    				</TouchableOpacity>
@@ -195,7 +200,8 @@ export default class userSeeting extends Component {
 	    		</View>
 
 	    		{this.renderAlertDialog()}
-      				    		<Alert ref={(o)=>this.alertShow=o}/>
+      			<Alert ref={(o)=>this.alertShow=o}/>
+      			<Loading loadingWait={this.state.loadingWait} />
       	</View>
     	);
   	}

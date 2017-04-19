@@ -117,7 +117,7 @@ export default class regest extends Component{
 			let data={
 				"nickname":this.state.name,
 				"phonenum":this.state.phoneNumber,
-		     	"password":this.state.password,    
+		     		"password":this.state.password,    
 			}
 
 			HttpMoudle.identifyCode(strs,(successMsg)=>{

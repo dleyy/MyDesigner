@@ -11,3 +11,28 @@ rnpm link
 2、添加底部tabView
 npm install react-native-tab-navigator --save
 
+
+
+
+
+
+3、loading
+import Spinner from 'react-native-loading-spinner-overlay';
+
+<Spinner visible={this.state.loading} textContent={this.state.loadingText} textStyle={{color: '#FFF'}} />
+
+
+
+4、post
+
+      Tools.getStorage('phonenum',(ret)=>{
+          var postData={
+            "phonenum":ret,
+          }
+          Tools..postNotBase64(this.getMoneyUrl,postData,(ret)=>{
+
+          },(err)=>{
+            ToastAndroid.show(JSON.stringify(err),2000);
+          })
+      });
+

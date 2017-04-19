@@ -28,15 +28,27 @@ export default class firstPage extends Component {
         }
     }
   componentDidMount() {
-         Tools.get(this.imgUrl,(ret)=>{
-          console.log("DLE===Img"+JSON.stringify(ret.images));
-          this.setState({
-            dataSource:this.dataSource.cloneWithPages(ret.images),
-            page:0,
-          }) 
-         },(err)=>{
-          ToastAndroid.show(err,2000);
-         })
+        Tools.getStorage('phonenum',(ret)=>{
+          if (Tools.isDataValid(ret)) {
+              var navigator = this.props.navigator;
+              if (navigator) {
+                  navigator.replace({
+                        name:'Home',
+                   })
+              }else{
+                Tools.get(this.imgUrl,(ret)=>{
+                    console.log("DLE===Img"+JSON.stringify(ret.images));
+                    this.setState({
+                      dataSource:this.dataSource.cloneWithPages(ret.images),
+                      page:0,
+                    }) 
+                   },(err)=>{
+                    ToastAndroid.show(err,2000);
+                   })
+            }
+          }
+        });
+         
   } 
 
   gotoSecend(){

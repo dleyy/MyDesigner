@@ -9,7 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-
+import Tools from '../tools';
 import NavBar from '../myComponent/Navibar';
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
@@ -50,6 +50,7 @@ export default class sysSetting extends Component {
 	}
 
 	existUser(){
+		Tools.removeStorage('phonenum');
 		let navigator = this.props.navigator;
 		if (navigator){
 			navigator.resetTo({

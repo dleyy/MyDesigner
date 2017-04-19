@@ -7,7 +7,8 @@ import {
     Platform,
     NetInfo
 } from 'react-native';
-import {cgRoute} from "./constStr"
+import {cgRoute} from "./constStr";
+import ImagePickerManager from '../node_modules/react-native-image-picker';
 var Tools = {
     timeFormat:function(time,space,callback){
       console.log("time=="+time)
@@ -352,14 +353,15 @@ var Tools = {
         });
     },
     
-    getStorage:function(key,callback){
+    getStorage:function(key, callback){
         AsyncStorage.getItem(key.toLowerCase())
             .then((value) => {
                 callback(value);
             })
             .catch((error) => {
+                console.log("----get token err----" + error);
                 // alert(error)
-                callback(null);
+                callback(null)
             })
             .done();
     },
@@ -585,6 +587,33 @@ var Tools = {
             //     path: 'images' // ios only - will save image at /Documents/images rather than the root
             // }
         };
+
+        ImagePickerManager.showImagePicker(options, (response) => {
+            //console.log("**********"+JSON.stringify(response))
+            if (response.didCancel) {
+               // errCallBack('User cancelled image picker')
+            }
+            else if (response.error) {
+                errCallBack(response.error)
+            }
+            else {
+               // console.log("**********"+JSON.stringify(response))
+               if(!option||!option.type||option.type=="base64"){
+                if(Platform.OS=='ios'){
+                    successCallBack({uri: response.uri.replace('file://', ''), isStatic: true},{uri: 'data:image/jpg;base64,' + response.data, path:response.uri.replace('file://', ''),isStatic: true}) 
+                }else{
+                    successCallBack({uri: response.uri, isStatic: true},{uri: 'data:image/jpg;base64,'+response.data, isStatic: true}) 
+                }
+               }else{
+                    if(Platform.OS=='ios'){
+                        successCallBack({uri: response.uri.replace('file://', ''), isStatic: true},{})
+                    }else{
+                        successCallBack({uri: response.uri, isStatic: true},{})
+                    }
+               }
+            }
+        });
+
     },
     uploadImg:function(url,imguri,successCannBack,errCallBack){
         var request = new XMLHttpRequest();
@@ -607,8 +636,9 @@ var Tools = {
         };
         request.open('POST', url);
         request.send(formData);
-
     },
+
+
     //格式化去除html标签
     htmlformat:function(str){
         return str.replace(/<[^>]+>/g,"")

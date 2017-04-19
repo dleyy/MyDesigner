@@ -15,8 +15,26 @@ export default class loading extends Component {
     super(props);
   
     this.state = {
-      animating:true,
+      animating:this.props.loadingWait?this.props.loadingWait:false,
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps) {
+        if (nextProps&&nextProps.loadingWait) {
+          this.setState({
+            animating:nextProps.loadingWait,
+          })
+        }
+    }
+  }
+
+  renderLoadingText(){
+    if (this.props.renderLoadingText){
+        return <Text>{this.props.loadingWaitText}</Text>
+    }else{
+      return null;
+    }
   }
 
   render() {
@@ -35,13 +53,13 @@ const styles = StyleSheet.create({
 	content:{
 		flex:1,
 		justifyContent: 'center',
-    alignItems: 'center',
-    position:'absolute',
-    top:screenHeight/2,
-    left:screenWidth/2,
+            alignItems: 'center',
+            position:'absolute',
+            top:screenHeight/2,
+            left:screenWidth/2,
 	},
-  centering:{
-    alignItems: 'center',
-    alignSelf:'center',
-  }
+      centering:{
+            alignItems: 'center',
+            alignSelf:'center',
+      }
 });

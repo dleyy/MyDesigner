@@ -36,6 +36,22 @@ import Search from '../HomePage/search';
 import SearchDetail from '../HomePage/searchDetail';
 //个人设置
 import UserSetting from '../Mine/userSeeting';
+//添加服务
+import AddService from '../Reward/addReward';
+//选择服务类型
+import SelectServiceType from '../Reward/SelectType';
+//下单
+import PlaceOrder from '../HomePage/placeOrder';
+//收藏
+import Collection from '../Mine/collection';
+//实名认证
+import Identify from '../Mine/identify';
+//我的钱包
+import MoneyPackge from '../Mine/moneyPackge';
+//我的技能
+import SkillManager from '../Mine/skillManager';
+//添加技能
+import AddSkill from '../Mine/addSkill';
 
 var _navigator;
 export default class mainIndex extends React.Component{
@@ -50,7 +66,7 @@ export default class mainIndex extends React.Component{
     	var Component = FirstPage;
         _navigator = navigator;
         switch(route.name){
-    		case 'FirstPage':
+    	case 'FirstPage':
                 Component=FirstPage;
                 break;
             case 'Regest':
@@ -58,6 +74,24 @@ export default class mainIndex extends React.Component{
                 break;
             case 'Login':
                 Component=Login;
+                break;
+            case 'AddSkill':
+                Component=AddSkill;
+                break;
+            case 'Identify':
+                Component=Identify;
+                break;
+            case 'SkillManager':
+                Component=SkillManager;
+                break;
+            case 'MoneyPackge':
+                Component=MoneyPackge;
+                break;
+            case 'Collection':
+                Component=Collection;
+                break;
+            case 'PlaceOrder':
+                Component = PlaceOrder;
                 break;
             case 'FindPassword':
                 Component=FindPassword;
@@ -82,6 +116,12 @@ export default class mainIndex extends React.Component{
                 break;
             case 'UserSetting':
                 Component=UserSetting;
+                break;
+            case 'SelectServiceType':
+                Component=SelectServiceType;
+                break;
+            case 'AddService':
+                Component=AddService;
                 break;
             default:
                 Component=FirstPage;

@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 
 import {
@@ -10,6 +9,7 @@ import {
   Image,
   ToastAndroid,
 } from 'react-native';
+
 import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';
 import {topheight,secondColor,mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
@@ -18,66 +18,52 @@ import TopViewPager from '../myComponent/myViewPager';
 import Tools from '../tools';
 import MyListView from '../myComponent/MyListView.js';
 const ds = new ListView.DataSource({rowHasChanged:(r1,r2)=>r1!==r2});
-var DEFAULTIMG = 'https://images.unsplash.com/photo-1441742917377-57f78ee0e582?h=1024';
-var DEFAULTSHOWS = [{DEFAULTIMG},{DEFAULTIMG}];
 
-export default class home extends Component {
-  constructor(props) {
-      super(props);
-      this.imgUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/leadimages/";
-      this.infoUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/services/";
-      this.listData=[];
-      this.myPage=1;
-      this.state = {
-        pagesize:5,
-        sliderImgs:[],
-        dataSource:ds,
-        count:20,
-        dataSize:this.listData?this.listData.length:0,
-      };
-    }  
+export default class collection extends Component {
+	constructor(props) {
+	  super(props);
+	  this.collectionUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/getcollections";
+	  this.listData=[];
+         this.myPage=1;
+	  this.state = {
+	  	pagesize:5,
+        	sliderImgs:[],
+             dataSource:ds,
+      		count:20,
+        	dataSize:this.listData?this.listData.length:0,
+	  };
+	}
 
-  componentDidMount() {
-    Tools.get(this.imgUrl,(ret)=>{
-      console.log("DLE===Img"+JSON.stringify(ret.images));
-      this.setState({sliderImgs:ret.images})
-      },(err)=>{
-        ToastAndroid.show(err,2000);
-      })
-    let data={
-      "pagesize":this.state.pagesize,
-      "page":this.myPage
-    };
-    Tools.postNotBase64(this.infoUrl,data,(ret)=>{
-      console.log("DLE===ret"+JSON.stringify(ret))
-      this.setState({count:ret.total})
-      if (this.myPage==1){              
-          this.listData = ret.data;
-        }else{
-          this.listData = this.listData.concat(ret.data)
-        }
-    this.setState({dataSource:ds.cloneWithRows(this.listData),dataSize:this.listData.length});
-    },(err)=>{
-      ToastAndroid.show(err,2000);  
-    });
-    
-     
+	componentDidMount() {
+	      Tools.getStorage('phonenum',(ret)=>{
+                      let data={
+                          "pagesize":this.state.pagesize,
+                          "page":this.myPage,
+                          "phonenum":ret,
+                        };
+                        Tools.postNotBase64(this.collectionUrl,data,(ret)=>{
+                          console.log("DLE===ret"+JSON.stringify(ret))
+                          this.setState({count:ret.total})
+                          if (this.myPage==1){              
+                              this.listData = ret.data;
+                            }else{
+                              this.listData = this.listData.concat(ret.data)
+                            }
+                        this.setState({dataSource:ds.cloneWithRows(this.listData),dataSize:this.listData.length});
+                        },(err)=>{
+                          ToastAndroid.show(err,2000);  
+                        })
+            });     
   }
 
-
-  renderTopView(){
-       return <View style={{width:screenWidth,height:140}}>
-              <TopViewPager
-                 imgs={this.state.sliderImgs} height={140}
-                 isLoop={this.state.sliderImgs.length==1?false:true}
-                 autoPlay={true} resizeMode={Image.resizeMode.stretch}
-                 corverBg={true} indicatorStyle={{alignItems:'flex-end',right:20,}}
-                 clickPage={()=>{this.imageClick()}}
-                 navigator={this.props.navigator} /> 
-             </View>  
+  back(){
+  	let navigator = this.props.navigator;
+  	if (navigator) {
+  		navigator.pop();
+  	};
   }
 
-  renderCenterImgs(rowData){
+renderCenterImgs(rowData){
     console.log("DLE===="+JSON.stringify(rowData.showImages))
     if (rowData.showImages){
       return rowData.showImages.map((item,i)=>{
@@ -88,25 +74,7 @@ export default class home extends Component {
     }
   }
 
-  //用户详情
-  toUser(id){
-    alert(id);
-  }
-
-  imageClick(){
-    alert("ImageClick");
-  }
-
-  toSearch(){
-    let navigator = this.props.navigator;
-    if (navigator){
-      navigator.push({
-        name:'Search',
-      })
-    }
-  }
-
-  toDetails(rowData,i,j){
+toDetails(rowData,i,j){
     let navigator = this.props.navigator;
     if (navigator){
       navigator.push({
@@ -148,7 +116,7 @@ export default class home extends Component {
     });
   }
 
-  renderRow(rowData,sectionID,rowID){
+renderRow(rowData,sectionID,rowID){
     return  <TouchableOpacity style={styles.listitem} onPress={()=>{this.toDetails(rowData,sectionID,rowID)}}> 
           <View>
             <View style={styles.servicetitle}>
@@ -197,36 +165,25 @@ export default class home extends Component {
   render() {
     return (
       <View style={styles.main}>
-      	<View style={styles.head}>
-          <TouchableOpacity onPress={()=>this.toSearch()}>
-            <Text style={styles.head_title}>搜索你感兴趣的内容</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={()=>this.toSearch()}>
-            <View style={{marginLeft:10}}>
-              <Icon name={'md-search'} size={25} color={'#fff'} />
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.center}>
-          <MyListView
-            dataSource={this.state.dataSource}
-            renderHeader={this.renderTopView.bind(this)}
-            renderRow={this.renderRow.bind(this)}
-            loadMore = {()=>this.loadMore()}
-            onRefresh = {()=>this._onRefresh()}
-            dataSize={this.state.dataSize}
-            count={this.state.count}
-            contentContainerStyle={styles.listViewStyle}/>
-        </View>
-
+      		<Navibar 
+             	back={()=>{this.back()}}
+             	titleStyle={styles.titleStyle}
+             	titleText={'我的收藏'}/>
+      		 <MyListView
+	            dataSource={this.state.dataSource}
+	            renderRow={this.renderRow.bind(this)}
+	            loadMore = {()=>this.loadMore()}
+	            onRefresh = {()=>this._onRefresh()}
+	            dataSize={this.state.dataSize}
+	            count={this.state.count}
+	            contentContainerStyle={styles.listViewStyle}/>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-	main:{
+main:{
 		flex:1,
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -329,5 +286,11 @@ const styles = StyleSheet.create({
   detaile:{
     fontSize:Size(16),
     marginLeft:5,
-  }
+  },
+    titleStyle:{
+    alignSelf:'flex-start',
+    color:'#EE5C42',
+    fontSize:Size(20),
+    marginLeft:50,
+  },
 });

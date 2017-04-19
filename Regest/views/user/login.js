@@ -16,7 +16,10 @@ import Navibar from '../myComponent/Navibar.js';
 import {secondColor,mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Tools from '../tools';
 import Loading from '../myComponent/loading.js';
+import Spinner from 'react-native-loading-spinner-overlay';
+
 const HttpMoudle = require('react-native').NativeModules.HttpMoudle;
+
 
 var url = "http://www.freeexplorer.top/leige/public/index.php/index/users/userload/";
 
@@ -35,43 +38,25 @@ export default class login extends Component {
 		if (!(/^1[34875]\d{9}$/.test(this.state.username))){
 			ToastAndroid.show("输入正确的手机号码",2000);
 		}else if(this.state.password){
-			this.setState({logining:true});
-			// HttpMoudle.Login(this.state.username,(rescode,arrs,message)=>{
-			// 	if (rescode=='success'&&arrs.Password&&arrs.Password==this.state.password){
-			// 		console.log("李磊==="+JSON.stringify(arrs))
-			// 		Tools.setStorage('userid',arrs.ObjectId),
-			// 		this.jumpToHome();
-			// 		this.setState({logining:false});
-			// 	}else if(rescode=='default'){
-			// 		ToastAndroid.show("请检查网络"+arrs,2000);
-			// 		this.setState({logining:false});
-			// 	}else{
-			// 		ToastAndroid.show("用户名或密码错误",2000);
-			// 		this.setState({logining:false});
-			// 	}
-			// })
-			
+			this.setState({loading:true,loadingText:'登录中...'});			
 			var data={
 				"phonenum":this.state.username,
 				"password":this.state.password
 			}
-			
 			Tools.postNotBase64(url,data,(ret)=>{
 				this.jumpToHome();
-				this.setState({logining:false});
+				this.setState({loading:false});
 			},(err)=>{
 				ToastAndroid.show(err,2000);
-				this.setState({logining:false});
+				this.setState({loading:false});
 			});
-
-
-
 		}else{
 			ToastAndroid.show("输入密码",2000);
 		}
 
 	}
 	jumpToHome(){
+		Tools.setStorage('phonenum',this.state.username);
 		let navigator = this.props.navigator;
 			if (navigator){
 				navigator.resetTo({
@@ -94,8 +79,6 @@ export default class login extends Component {
 		}
 	}
 
-
-
   render() {
     return (
     	<View style={styles.container}>
@@ -108,6 +91,7 @@ export default class login extends Component {
     			<Image style={styles.userIcon} source={require('../../Img/defaultIcon.jpg')} />
     		</View>
     		<View style={styles.center}>
+
     			<TextInput 
     				style={{height: 40}}
     				maxLength={11}
@@ -134,17 +118,9 @@ export default class login extends Component {
     				<Text style={{fontSize:Size(18),color:secondColor,marginTop:25}}>忘记密码</Text>
     			</TouchableOpacity>
     		</View>
-    		{this.renderLoading()}
+    		 <Spinner visible={this.state.loading} textContent={this.state.loadingText} textStyle={{color: '#FFF'}} />
     	</View>
     );
-  }
-
-  renderLoading(){
-  	if (!this.state.logining){
-   		return null;
-  	}else{
-  		return <Loading/>
-  	}
   }
 
 

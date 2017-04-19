@@ -8,12 +8,16 @@ import {
   TouchableOpacity,
   Image,
   ListView,
+  ToastAndroid,
+  ScrollView,
+  RefreshControl,
 } from 'react-native';
 import Navibar from '../myComponent/Navibar.js';
 import Button from '../myComponent/Button.js';
 import {mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
-import Loading from '../myComponent/loading.js'
+import Loading from '../myComponent/loading.js';
+import Tools from '../tools.js';
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class mine extends Component {
@@ -27,7 +31,10 @@ export default class mine extends Component {
       userIconLocation:'',
       optionList:'',
       dataSource:ds,
+      sex:'',
+      isRefreshing:false,
     }
+    this.postUrl="http://www.freeexplorer.top/leige/public/index.php/index/users/userinfo";
   }
 
   componentDidMount(){
@@ -42,24 +49,75 @@ export default class mine extends Component {
       {name:'ios-star-outline',message:'收藏'},
       {name:'ios-construct-outline',message:'系统设置'},
     ];
+
+    Tools.getStorage('phonenum',(ret)=>{
+      var postData={'phonenum':ret}
+          Tools.postNotBase64(this.postUrl,postData,(ret)=>{
+              this.setState({
+                username:ret.nickname,
+                identify:ret.qualification,
+                userIconLocation:ret.userhead,
+                sex:ret.sex,
+                isRefreshing:false,
+              })
+          },(err)=>{
+            ToastAndroid.show(err,2000);
+          });
+    });
     this.setState({
       dataSource:ds.cloneWithRows(Arr),
+      isRefreshing:false,
     })
+
   }
 
   toOperaterDetail(rowData){
+    let navigator = this.props.navigator;
     switch(rowData.message)
     {
       case '系统设置':
-      let navigator = this.props.navigator;
-        if (navigator){
+            if (navigator){
+              navigator.push({
+                name:'SysSetting'
+              })
+            }
+      break;
+      case '收藏':
+          if (navigator){
+            navigator.push({
+              name:'Collection'
+            })
+          }
+      break;
+      case '认证':
+        if (navigator) {
           navigator.push({
-            name:'SysSetting'
+            name:'Identify'
           })
         }
-        break;
-
+      break;
+      case '我的钱包':
+          if (navigator) {
+            navigator.push({
+              name:'MoneyPackge'
+            })
+          }
+      break;
+      case '技能管理':
+          if (navigator) {
+            navigator.push({
+              name:'SkillManager'
+            })
+          }
+      break;    
     }
+  }
+
+  loadMoreMessage(){
+    this.setState({
+      isRefreshing:true,
+    })
+    this.componentDidMount();
   }
 
   toUserInfo(){
@@ -67,6 +125,11 @@ export default class mine extends Component {
     if (navigator){
       navigator.push({
         name:'UserSetting',
+        param: {                 
+            nickname:this.state.username,
+            sex:this.state.sex,
+            userheard:this.state.userIconLocation,
+      }
       })
     }
   }
@@ -83,6 +146,12 @@ export default class mine extends Component {
 
   render() {
     return (
+      <ScrollView         refreshControl={  
+          <RefreshControl  
+           refreshing={this.state.isRefreshing}  
+            onRefresh={()=>this.loadMoreMessage()}  
+            colors={['#ff0000', '#00ff00','#0000ff','#3ad564']}  
+           progressBackgroundColor="#ffffff" />}>
       <View style={styles.main}>
       	<TouchableOpacity onPress={()=>this.toUserInfo()}>
           <View style={styles.head}>
@@ -91,8 +160,8 @@ export default class mine extends Component {
               <Text>{this.state.username}</Text>
             </View>
             <View style={{marginRight:80,justifyContent:'center',alignItems:'center',}}>
-              <Icon name={"ios-card-outline"} size={40} color={this.state.identify?mainColor:'rgba(255,0,0,0.3)'} />
-              <Text style={{color:this.state.identify?mainColor:'rgba(255,0,0,0.3)'}}>{this.state.identify?'已':'未'}认证</Text>
+              <Icon name={"ios-card-outline"} size={40} color={this.state.identify==true?mainColor:'rgba(255,0,0,0.3)'} />
+              <Text style={{color:this.state.identify==true?mainColor:'rgba(255,0,0,0.3)'}}>{this.state.identify==true?'已':'未'}认证</Text>
             </View> 
           </View>  
         </TouchableOpacity>     
@@ -104,13 +173,13 @@ export default class mine extends Component {
             contentContainerStyle={styles.listViewStyle}/>
         </View>
       </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
 	main:{
-		flex:1,
 		alignItems: 'center',
 	},
   head:{

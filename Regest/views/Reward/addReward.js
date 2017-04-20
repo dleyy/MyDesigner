@@ -81,6 +81,8 @@ export default  class addReward extends Component {
         ToastAndroid.show('请输入服务描述',2000)
     }else     if (this.state.serviceType=='选择服务类型'){
         ToastAndroid.show('请选择服务类型',2000)
+    }else if(!Tools.isDataValid(this.userImags)){
+        ToastAndroid.show("请上传图片描述",2000)
     }else     if (!this.state.location){
         ToastAndroid.show('请输入服务地点',2000)
     }else     if (!this.state.price){

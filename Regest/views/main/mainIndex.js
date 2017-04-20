@@ -52,6 +52,10 @@ import MoneyPackge from '../Mine/moneyPackge';
 import SkillManager from '../Mine/skillManager';
 //添加技能
 import AddSkill from '../Mine/addSkill';
+//发布和接受的任务的服务详情
+import Cancle from '../Reward/cancle.js';
+//完成服务
+import Complete from '../Reward/complete.js';
 
 var _navigator;
 export default class mainIndex extends React.Component{
@@ -81,8 +85,14 @@ export default class mainIndex extends React.Component{
             case 'Identify':
                 Component=Identify;
                 break;
+            case 'Complete':
+                Component=Complete;
+                break;
             case 'SkillManager':
                 Component=SkillManager;
+                break;
+            case 'Cancle':
+                Component=Cancle;
                 break;
             case 'MoneyPackge':
                 Component=MoneyPackge;

@@ -15,6 +15,7 @@ import Button from '../myComponent/Button.js';
 import {topheight,secondColor,mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 import Tools from '../tools';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class moneyPackge extends Component {
   constructor(props) {
@@ -22,12 +23,33 @@ export default class moneyPackge extends Component {
     this.getMoneyUrl="http://www.freeexplorer.top/leige/public/index.php/index/users/getaccountmoney";
     this.addMoneyUrl="http://www.freeexplorer.top/leige/public/index.php/index/users/addaccountmoney";
     this.state = {
-    	money:20
+    	money:20,
+      loading:false,
+      loadingText:'充值中...',
     };
   }
 
   addMoney(){
-
+      this.setState({
+        loading:true,
+      })
+      Tools.getStorage('phonenum',(ret)=>{
+          var postData={
+            "phonenum":ret,
+            'num':100,
+          }
+          Tools.postNotBase64(this.addMoneyUrl,postData,(ret)=>{
+                ToastAndroid.show("充值100成功",2000);
+                this.setState({
+                  loading:false,
+                })
+          },(err)=>{
+              this.setState({
+                  loading:false,
+                })
+            ToastAndroid.show(JSON.stringify(err),2000);
+          })
+      });
   }
 
   componentDidMount() {
@@ -35,8 +57,10 @@ export default class moneyPackge extends Component {
           var postData={
             "phonenum":ret,
           }
-          Tools..postNotBase64(this.getMoneyUrl,postData,(ret)=>{
-
+          Tools.postNotBase64(this.getMoneyUrl,postData,(ret)=>{
+                this.setState({
+                  money:ret.money
+                })
           },(err)=>{
             ToastAndroid.show(JSON.stringify(err),2000);
           })
@@ -73,6 +97,7 @@ export default class moneyPackge extends Component {
 	            			Click={()=>this.addMoney()}
 	            			bgcolor={'#EE3B3B'}/>
 	            	</View>
+            <Spinner visible={this.state.loading} textContent={this.state.loadingText} textStyle={{color: '#FFF'}} />
       		</View>   
       </View>
     );

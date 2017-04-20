@@ -24,15 +24,121 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 
 4、post
-
+	  
+	  this.setState({
+		loading:true,
+	  })
       Tools.getStorage('phonenum',(ret)=>{
           var postData={
             "phonenum":ret,
           }
-          Tools..postNotBase64(this.getMoneyUrl,postData,(ret)=>{
-
+          Tools.postNotBase64(this.getMoneyUrl,postData,(ret)=>{
+			ToastAndroid.show("",2000);
+			this.setState({
+				loading:false,
+			})
           },(err)=>{
             ToastAndroid.show(JSON.stringify(err),2000);
+			this.setState({
+                loading:false,
+              })
           })
       });
+	  
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 

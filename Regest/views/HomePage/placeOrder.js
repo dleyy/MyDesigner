@@ -18,6 +18,7 @@ import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 import TopViewPager from '../myComponent/myViewPager';
 import Loading from '../myComponent/loading.js';
 import Tools from '../tools';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default  class placeOrder extends Component {
 	constructor(props) {
@@ -29,7 +30,7 @@ export default  class placeOrder extends Component {
 	  	data:this.props.param.data,
 	  	defaultNum:1,
 	  	pickData:'选择服务时间',
-	  	loadingWait:false,
+	  	loading:false,
 	  };
 	}
 
@@ -95,6 +96,10 @@ export default  class placeOrder extends Component {
 		}else if(!this.state.phonenum){
 			ToastAndroid.show("请输入手机号码",2000)
 		}else{
+			this.setState({
+				loading:true,
+				loadingText:"loading..."
+			})
 		var postData={
 			'serID':this.state.data.serID,
 			'time':this.state.pickData,
@@ -108,12 +113,12 @@ export default  class placeOrder extends Component {
         		this.setState({
         			name:'',
         			notes:'',
-        			loadingWait:false,
+        			loading:false,
         		})
 	      },(err)=>{
 	        ToastAndroid.show(err,2000);
 	             this.setState({
-        			loadingWait:false,
+        			loading:false,
         		})
 	      })
 	}
@@ -269,7 +274,7 @@ export default  class placeOrder extends Component {
       				<Text style={{color:'#fff',fontSize:Size(17)}}>确认支付</Text>
       			</TouchableOpacity>
       		</View>
-      		<Loading loadingWait={this.state.loadingWait} />
+      		<Spinner visible={this.state.loading} textContent={this.state.loadingText} textStyle={{color: '#FFF'}} />
       </View>
     );
   }

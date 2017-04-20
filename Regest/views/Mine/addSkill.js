@@ -16,12 +16,15 @@ import Button from '../myComponent/Button.js';
 import {topheight,secondColor,mainColor,appName,Size,navheight,screenWidth,screenHeight} from '../constStr';
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 import Tools from '../tools';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class addSkill extends Component {
   constructor(props) {
     super(props);
-    this.addUrl="";
-    this.state = {};
+    this.addUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/addservicetype";
+    this.state = {
+    		loading:false,
+    };
   }
 
   back(){
@@ -32,6 +35,15 @@ export default class addSkill extends Component {
   }
 
   toRule(){
+  	if (!this.state.skillname){
+  		ToastAndroid.show("输入技能名",2000);
+  	}else if(!this.state.skillDetail){
+  		ToastAndroid.show("输入描述",2000);
+  	}else{
+  	this.setState({
+  		loading:true,
+  		loadingText:'上传中...'
+  	})
   	Tools.getStorage('phonenum',(ret)=>{
 	  	var postData = {
 	  		'skillname':this.state.skillname,
@@ -39,12 +51,21 @@ export default class addSkill extends Component {
 	  		'phonenum':ret
 	  	}
             Tools.postNotBase64(this.addUrl,postData,(ret)=>{
-                ToastAndroid.show(ret,2000);
+                this.setState({
+                	loading:false,
+                	skillname:"",
+                	skillDetail:"",
+                })
+                ToastAndroid.show("上传成功...",2000);
+
             },(err)=>{
-                ToastAndroid.show(err,2000);
+            	      this.setState({
+                		loading:false,
+                	})
+                ToastAndroid.show(JSON.stringify(err),2000);
             })
       })
-
+	}
   }
 
   render() {
@@ -93,10 +114,11 @@ export default class addSkill extends Component {
 		         		 </View>
       				<Button
       					contentText={'发布新技能'}
-	            			Click={()=>this.addSkill()}
+	            			Click={()=>this.toRule()}
 	            			bgcolor={'#EE3B3B'}/>	              	
 	              </View>	
 		</View>
+		<Spinner visible={this.state.loading} textContent={this.state.loadingText} textStyle={{color: '#FFF'}} />
       </View>
     );
   }

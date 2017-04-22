@@ -67,6 +67,13 @@ export default class moneyPackge extends Component {
       });
   }
 
+  back(){
+    let navigator  = this.props.navigator;
+    if (navigator) {
+      navigator.pop();
+    };
+  }
+
   render() {
     return (
       <View style={styles.main}>

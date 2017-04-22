@@ -56,6 +56,12 @@ import AddSkill from '../Mine/addSkill';
 import Cancle from '../Reward/cancle.js';
 //完成服务
 import Complete from '../Reward/complete.js';
+//任务完成
+import TaskComplete from '../Reward/CompleteService.js';
+//用户列表
+import UserList from '../Message/userInfo.js';
+//订单详情
+import orderDetail from '../Message/infoDetail.js';
 
 var _navigator;
 export default class mainIndex extends React.Component{
@@ -85,14 +91,23 @@ export default class mainIndex extends React.Component{
             case 'Identify':
                 Component=Identify;
                 break;
+            case 'TaskComplete':
+                Component=TaskComplete;
+                break;
             case 'Complete':
                 Component=Complete;
                 break;
             case 'SkillManager':
                 Component=SkillManager;
                 break;
+            case 'orderDetail':
+                Component=orderDetail;
+                break;
             case 'Cancle':
                 Component=Cancle;
+                break;
+            case 'UserList':
+                Component=UserList;
                 break;
             case 'MoneyPackge':
                 Component=MoneyPackge;

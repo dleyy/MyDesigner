@@ -49,7 +49,7 @@ export default class cancle extends Component {
                 'serID':this.state.serviceInfo.serID,
             }
             Tools.postNotBase64(this.collectionUrl,postData,(ret)=>{
-                ToastAndroid.show(ret,2000);
+                ToastAndroid.show(JSON.stringify(ret),2000);
             },(err)=>{
                 ToastAndroid.show('收藏失败'+JSON.stringify(err),2000);
             })
@@ -57,13 +57,14 @@ export default class cancle extends Component {
   }
 
   completService(){
+      var CompoentName = this.state.nowtype==1?'TaskComplete':'Complete';
   	if (this.state.serviceInfo.state!='进行中') {
   		ToastAndroid.show(this.state.serviceInfo.state+"的服务不能完成",2000);
   	}else{
 	  	let navigator = this.props.navigator;
 	  	if (navigator) {
 	  		navigator.push({
-	  			name:'Complete',
+	  			name:CompoentName,
 	  			param:{
 	  				'data':this.state.serviceInfo,
 	  			}
@@ -86,9 +87,9 @@ export default class cancle extends Component {
   }
 
   cancleOrder(){
-  	// if (this.state.serviceInfo.state!="进行中") {
-  	// 	ToastAndroid.show(this.state.serviceInfo.state+"的服务不能取消",2000);
-  	// }else{
+  	if (this.state.serviceInfo.state!="进行中") {
+  		ToastAndroid.show(this.state.serviceInfo.state+"的服务不能取消",2000);
+  	}else{
 	  	this.setState({
 	  		loading:true,
 	  	})
@@ -100,7 +101,7 @@ export default class cancle extends Component {
                           "note":"我不想发布了"
 		          }
 	          Tools.postNotBase64(url,postData,(ret)=>{
-				ToastAndroid.show("取消成功"+JSON.stringify(ret),2000);
+				ToastAndroid.show("取消成功",2000);
 				this.setState({
 					loading:false,
 				})
@@ -112,7 +113,7 @@ export default class cancle extends Component {
 	          })
 	      });
   	   }
-  // }
+  }
 
   render() {
     return (

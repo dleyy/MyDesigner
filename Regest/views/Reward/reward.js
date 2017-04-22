@@ -90,7 +90,7 @@ export default class reward extends Component {
          return  this.state.serviceInfo.map((item,i)=>{
                 return  <TouchableOpacity style={styles.serviceItem} key={i} onPress={()=>this.toServiceInfo(item)}>
                        <View style={styles.serviceItem}>
-                          <Text style={{fontSize:Size(18),width:80,color:'#A52A2A',borderRightWidth:1,borderRightColor:'#e8e8e8'}}>{item.state}</Text>
+                          <Text style={{fontSize:Size(18),width:80,color:item.state=='进行中'?mainColor:'#A52A2A',borderRightWidth:1,borderRightColor:'#e8e8e8'}}>{item.state}</Text>
                           <View style={{flex:1,justifyContent: 'center',paddingBottom:5,alignItems: 'center',}}>
                                   <Text  style={{fontSize:Size(16),color:'#EE4000'}}>{item.title}</Text>
                                   <View style={{width:screenWidth-70,height:1,backgroundColor:'#e8e8e8'}}/>

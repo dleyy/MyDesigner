@@ -18,41 +18,31 @@ import TopViewPager from '../myComponent/myViewPager';
 import Tools from '../tools';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-
-export default class complete extends Component {
+export default class CompleteService extends Component {
   constructor(props) {
     super(props);
-    this.sureUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/checkcode";
+    this.sureUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/getcheckcode";
     this.state = {
     	data:this.props.param.data,
-    	num:'',
-    };
-  }
-
-  back(){
-    let navigator = this.props.navigator;
-    if (navigator) {
-      navigator.pop();
+    	num:'请先获取验证码',
     };
   }
 
   sure(){
-  	if (this.state.num) {
   	this.setState({
 		loading:true,
 	  })
       Tools.getStorage('phonenum',(ret)=>{
           var postData={
-            "phonenum":ret,
-            "num":this.state.num,
-            "serID":this.state.data.serID,
+            "phonenum":this.state.data.phonenum,
+            "serID":this.state.data.serID?this.state.data.serID:this.state.data.orderID,
           }
           Tools.postNotBase64(this.sureUrl,postData,(ret)=>{
+			ToastAndroid.show('获取验证码成功',2000);
 			this.setState({
+				num:ret.num,
 				loading:false,
 			})
-              ToastAndroid.show("订单已完成!",2000);
-              this.back();
           },(err)=>{
             ToastAndroid.show(JSON.stringify(err),2000);
 			this.setState({
@@ -60,8 +50,12 @@ export default class complete extends Component {
               	})
           })
       })
-  }else{
-  	ToastAndroid.show("请输入校验码",2000);
+}
+
+back(){
+  let navigator = this.props.navigator;
+  if (navigator) {
+    navigator.pop();
   }
 }
 
@@ -83,20 +77,13 @@ export default class complete extends Component {
       			</View>
       		</View>
       		<View style={{flex:1,alignItems: 'center',}}>
-     		<Text style={{fontSize:Size(20),marginTop:10,marginRight:30}}>请输入服务者手机上获取的编号:</Text>
-     			<TextInput 
-    				style={{height: 60,fontSize:Size(30),width:screenWidth,marginTop:5}}
-    				keyboardType={'numeric'}
-    				maxLength={6}
-    				underlineColorAndroid={'transparent'}
-			      onChangeText={(num) => this.setState({num:num})}
-			      value={this.state.num}/>
-			<View style={{width:screenWidth,height:1,backgroundColor:mainColor}}/>
+     		<Text style={{fontSize:Size(20),marginTop:10,marginRight:30}}>请下单者输入如下验证码:</Text>
+     			<Text style={{fontSize:Size(30),marginTop:35}} >{this.state.num}</Text>
      		</View>
           
          <View style={{justifyContent: 'center',alignItems: 'center',marginTop:20,marginBottom:40}}>
           <Button 
-            contentText={'完成'}
+            contentText={'获取验证码'}
             Click={()=>this.sure()}
             bgcolor={'#EE3B3B'}/>
         </View>  

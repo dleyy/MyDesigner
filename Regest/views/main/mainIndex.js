@@ -62,6 +62,8 @@ import TaskComplete from '../Reward/CompleteService.js';
 import UserList from '../Message/userInfo.js';
 //订单详情
 import orderDetail from '../Message/infoDetail.js';
+//评论
+import Comment from '../Reward/Comment.js'
 
 var _navigator;
 export default class mainIndex extends React.Component{
@@ -87,6 +89,9 @@ export default class mainIndex extends React.Component{
                 break;
             case 'AddSkill':
                 Component=AddSkill;
+                break;
+            case 'Comment':
+                Component=Comment;
                 break;
             case 'Identify':
                 Component=Identify;

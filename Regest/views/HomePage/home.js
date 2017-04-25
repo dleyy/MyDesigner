@@ -90,11 +90,11 @@ export default class home extends Component {
 
   //用户详情
   toUser(id){
-    alert(id);
+    alert(id)
   }
 
   imageClick(){
-    alert("ImageClick");
+
   }
 
   toSearch(){
@@ -121,8 +121,16 @@ export default class home extends Component {
   toLike(){
 
   }
-  toComment(){
-
+  toComment(serID){
+      let navigator = this.props.navigator;
+      if (navigator) {
+        navigator.push({
+          name:'Comment',
+          param:{
+            'serID':serID,
+          }
+        })
+      };
   }
   _onRefresh(){
     this.myPage=1;
@@ -180,7 +188,7 @@ export default class home extends Component {
                     <Icon name={'md-heart-outline'} size={20} color={'rgb(255,194,114)'} />
                     <Text style={styles.detaile}>{rowData.like}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.operater} onPress={()=>{this.toComment()}}>
+                  <TouchableOpacity style={styles.operater} onPress={()=>this.toComment(rowData.serID)}>
                     <Icon name={'ios-chatboxes-outline'} size={20} color={'rgb(90,176,172)'} />
                     <Text style={styles.detaile}>{rowData.comment}</Text>
                   </TouchableOpacity>

@@ -25,6 +25,13 @@ export default  class Button extends Component {
 }
 
 const styles = StyleSheet.create({
+      container:{
+        width:screenWidth,
+        height:80,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom:20,
+      },
 	buttonStyle:{
 		backgroundColor:'rgb(69,175,175)',
 		width:screenWidth-30,

@@ -17,12 +17,16 @@ import {secondColor,mainColor,appName,Size,navheight,screenWidth,screenHeight} f
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 import Tools from '../tools';
 import Spinner from 'react-native-loading-spinner-overlay';
+import AlertDialog from '../myComponent/AlertDialog';
+
 
 export default class infoDetail extends Component {
   constructor(props) {
     super(props);
+    this.updateUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/changeorderstate";
     this.state = {
     	orderInfo:this.props.param.data,
+    	showDialog:false,
     };
   }
 
@@ -48,27 +52,8 @@ export default class infoDetail extends Component {
 
 	cancleOrder(){
 		this.setState({
-	  		loading:true,
-	  	})
-		var url=123;
-	  	      Tools.getStorage('phonenum',(ret)=>{
-		          var postData={
-		            "phonenum":ret,
-		            "serID":this.state.serviceInfo.serID,
-                          "note":"我不想发布了"
-		          }
-	          Tools.postNotBase64(url,postData,(ret)=>{
-				ToastAndroid.show("取消成功"+JSON.stringify(ret),2000);
-				this.setState({
-					loading:false,
-				})
-	          },(err)=>{
-	            ToastAndroid.show(JSON.stringify(err),2000);
-				this.setState({
-	                loading:false,
-	              })
-	          })
-	      });
+			showDialog:!this.state.showDialog,
+		})
   	   }
 
 
@@ -83,6 +68,57 @@ export default class infoDetail extends Component {
   	}else{
   		return null;
   	}
+  }
+
+  renderCancleButton(){
+  	if (this.state.orderInfo.orderstate=='进行中') {
+  		return <View style={{justifyContent: 'center',alignItems: 'center'}}>
+  					<Button
+  						contentText={'取消服务'}
+  						Click={()=>this.cancleOrder()}
+  						bgcolor={'#CD2626'}
+  						/>
+  			    </View>
+  	}
+  }
+
+  renderAlertDialog(){
+	if (!this.state.showDialog){
+		return null;
+	}else{
+		return <AlertDialog
+					title={'取消原因'}
+					cancle={()=>{this.setState({showDialog:false})}}
+					changeText={(note)=>this.updateState(note)}/>
+	}
+  }
+
+  updateState(note){
+  	this.setState({
+  		loading:true,
+  		loadingText:'取消中...'
+  	})
+      Tools.getStorage('phonenum',(ret)=>{
+          var postData={
+            "phonenum":ret,
+            'state':'已拒绝',
+            'note':note,
+          	'orderID':this.state.orderInfo.orderID,
+          }
+          Tools.postNotBase64(this.updateUrl,postData,(ret)=>{
+          		this.setState({
+          			loading:false,
+          			showDialog:false,
+          		})
+			ToastAndroid.show("取消成功",2000);
+          },(err)=>{
+          	       this.setState({
+          			loading:false,
+          			showDialog:false,
+          		})
+            ToastAndroid.show(err,2000);
+          })
+      });
   }
 
   render() {
@@ -120,13 +156,21 @@ export default class infoDetail extends Component {
 		      				<Icon name={'ios-create'}  size={25} style={{marginTop:15,marginLeft:10}}/>
 		      				<Text  style={styles.infoText}>{this.state.orderInfo.note}</Text>
 		      			</View>
+		      			<View style={{width:screenWidth,height:1,backgroundColor:'#e8e8e8'}}/>
 		      			<View style={{width:screenWidth,height:50,flexDirection:'row'}}>
 		      				<Icon name={'ios-clock'}  size={25} style={{marginTop:15,marginLeft:10}}/>
 		      				<Text  style={styles.infoText}>{this.state.orderInfo.time.substring(0,10)}</Text>
 		      			</View>
+		      			<View style={{width:screenWidth,height:1,backgroundColor:'#e8e8e8'}}/>
+		      			<View style={{width:screenWidth,height:50,flexDirection:'row'}}>
+		      				<Text style={{marginTop:15,marginLeft:10,fontSize:Size(20)}}>订单数量</Text>
+		      				<Text  style={styles.infoText}>{this.state.orderInfo.num}</Text>
+		      			</View>
 		      		<View style={{width:screenWidth,height:1,backgroundColor:'#e8e8e8'}}/>
 		           <Spinner visible={this.state.loading} textContent={this.state.loadingText} textStyle={{color: '#FFF'}} />
-					{this.renderCompleteButton()}           		
+					{this.renderCompleteButton()}
+					{this.renderCancleButton()}
+					{this.renderAlertDialog()}	           		
 			</View>
 
       </View>

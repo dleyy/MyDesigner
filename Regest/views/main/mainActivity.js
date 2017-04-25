@@ -100,13 +100,13 @@ export default class mainActivity extends Component {
             <TouchableOpacity onPress={()=>{this.changeSelectTab(1)}} 
                 style={styles.foot_items}>
                 <Icon name={'md-clipboard'} size={23} color={this.state.selectedTab==1?mainColor:secondColor}/>
-                <Text style={{fontSize:Size(16),color:this.state.selectedTab==1?mainColor:secondColor}}>悬赏</Text>
+                <Text style={{fontSize:Size(16),color:this.state.selectedTab==1?mainColor:secondColor}}>服务</Text>
             </TouchableOpacity>
             
             <TouchableOpacity onPress={()=>{this.changeSelectTab(2)}}
                 style={styles.foot_items}>
                 <Icon name={'md-chatbubbles'} size={23} color={this.state.selectedTab==2?mainColor:secondColor}/>
-                <Text style={{fontSize:Size(16),color:this.state.selectedTab==2?mainColor:secondColor}}>消息</Text>
+                <Text style={{fontSize:Size(16),color:this.state.selectedTab==2?mainColor:secondColor}}>到位</Text>
             </TouchableOpacity>
             
             <TouchableOpacity onPress={()=>{this.changeSelectTab(3)}} 

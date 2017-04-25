@@ -27,6 +27,7 @@ export default class userSeeting extends Component {
 	   this.state = {
 	   	userHeard:this.props.param.userheard?this.props.param.userheard:this.defaultUserIcon,
 	   	nickName:this.props.param.nickname?this.props.param.nickname:'',
+	   	credit:this.props.param.credit?this.props.param.credit:'',
 	   	showDialog:false,
 	   	AlertTitle:'', 
 	   	password:'',
@@ -152,6 +153,10 @@ export default class userSeeting extends Component {
       			titleStyle={styles.titleStyle}
     				titleText={'个人信息'}/>
     			<View style={{flex:1,justifyContent: 'center',}}>
+    				<View style={styles.infoView}>
+    						<Text style={{marginLeft:20,fontSize:Size(16)}}>当前信用分</Text>
+    						<Text style={{marginRight:20,fontSize:Size(16),color:mainColor}}>{this.state.credit}</Text>
+    				</View>
 	    			<View style={styles.infoView}>
 	    				<Text style={styles.userIcon}>头像</Text>
 	    				<TouchableOpacity onPress={()=>{this.changeUserHeard()}} style={{flex:1}} >
@@ -190,6 +195,7 @@ export default class userSeeting extends Component {
 	    					</View>
 	    				</TouchableOpacity>
 	    			</View>
+
 	    		</View>
 
 	    		<View style={{justifyContent:'center',margin:10,alignItems:'center'}}>

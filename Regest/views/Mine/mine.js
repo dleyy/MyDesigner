@@ -39,8 +39,6 @@ export default class mine extends Component {
 
   componentDidMount(){
     var Arr=[
-      {name:'ios-clipboard-outline',message:'我的订单'},
-      {name:'ios-paper-outline',message:'需求管理'},
       {name:'ios-trophy-outline',message:'技能管理'},
       {name:'ios-cube-outline',message:'积分商城'},
       {name:'ios-folder-open-outline',message:'我的钱包'},
@@ -55,10 +53,12 @@ export default class mine extends Component {
           Tools.postNotBase64(this.postUrl,postData,(ret)=>{
               this.setState({
                 username:ret.nickname,
-                identify:ret.qualification,
+                identify:ret.state=='已认证'?true:false,
+                credit:ret.credit,
                 userIconLocation:ret.userhead,
                 sex:ret.sex,
                 isRefreshing:false,
+
               })
           },(err)=>{
             ToastAndroid.show(err,2000);
@@ -129,6 +129,7 @@ export default class mine extends Component {
             nickname:this.state.username,
             sex:this.state.sex,
             userheard:this.state.userIconLocation,
+            'credit':this.state.credit,
       }
       })
     }
@@ -160,8 +161,8 @@ export default class mine extends Component {
               <Text>{this.state.username}</Text>
             </View>
             <View style={{marginRight:80,justifyContent:'center',alignItems:'center',}}>
-              <Icon name={"ios-card-outline"} size={40} color={this.state.identify==true?mainColor:'rgba(255,0,0,0.3)'} />
-              <Text style={{color:this.state.identify==true?mainColor:'rgba(255,0,0,0.3)'}}>{this.state.identify==true?'已':'未'}认证</Text>
+                   <Icon name={"ios-card-outline"} size={40} color={this.state.identify==true?mainColor:'rgba(255,0,0,0.3)'} />
+                  <Text style={{color:this.state.identify==true?mainColor:'rgba(255,0,0,0.3)'}}>{this.state.identify==true?'已':'未'}认证</Text>
             </View> 
           </View>  
         </TouchableOpacity>     

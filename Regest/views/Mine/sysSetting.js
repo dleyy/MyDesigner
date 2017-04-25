@@ -7,6 +7,7 @@ import {
   View,
   Text,
   Image,
+  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import Tools from '../tools';
@@ -38,15 +39,15 @@ export default class sysSetting extends Component {
 	}
 
 	clearnMer(){
-
+		ToastAndroid.show('清除完毕',2000);				
 	}
 
 	updateVersion(){
-
+		ToastAndroid.show('当前已是最新版本了',2000);
 	}
 
 	aboutUs(){
-
+		alert('Hello')
 	}
 
 	existUser(){
@@ -68,30 +69,6 @@ export default class sysSetting extends Component {
     		titleText={'系统设置'}/>
     	<View style={styles.content}>
     		<View>
-    			<TouchableOpacity  style={styles.itemView} onPress={()=>this.bindUser()}>
-    				<View style={styles.itemViewIcon}>
-    					<Icon name={'ios-link-outline'} size={26} color={'#1E90FF'}/>
-	    			</View>
-	    			<View style={styles.itemViewText}>
-	    				<Text style={{fontSize:Size(18)}}>账号绑定</Text>	
-	    			</View>
-	    			<View style={styles.itemViewIcon}>
-	    				<Text style={{fontSize:Size(25),color:mainColor}}>></Text>
-    				</View>
-    			</TouchableOpacity>
-
-    			<TouchableOpacity  style={styles.itemView} onPress={()=>this.managerLocal()}>
-    				<View style={styles.itemViewIcon}>
-    					<Icon name={'ios-nutrition-outline'} size={26} color={'#228B22'}/>
-	    			</View>
-	    			<View style={styles.itemViewText}>
-	    				<Text style={{fontSize:Size(18)}}>管理收货地址</Text>	
-	    			</View>
-	    			<View style={styles.itemViewIcon}>
-	    				<Text style={{fontSize:Size(25),color:mainColor}}>></Text>
-    				</View>
-    			</TouchableOpacity>
-
     			<TouchableOpacity  style={styles.itemView} onPress={()=>this.clearnMer()}>
     				<View style={styles.itemViewIcon}>
     					<Icon name={'ios-close-outline'} size={26} color={'#9400D3'}/>

@@ -16,6 +16,7 @@ import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 import TopViewPager from '../myComponent/myViewPager';
 import Tools from '../tools';
 import Spinner from 'react-native-loading-spinner-overlay';
+import AlertDialog from '../myComponent/AlertDialog';
 
 export default class cancle extends Component {
   constructor(props) {
@@ -23,6 +24,7 @@ export default class cancle extends Component {
     this.collectionUrl = "http://www.freeexplorer.top/leige/public/index.php/index/index/addcollection";
     this.cancleMySelf="http://www.freeexplorer.top/leige/public/index.php/index/index/cancelservice";
     this.cancleMyOrder="http://www.freeexplorer.top/leige/public/index.php/index/index/cancelorder";
+    this.commentUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/addcomment";
     this.state = {
     	serviceName:this.props.param.data.title,
     	sliderImgs:this.props.param.data.showImages?this.props.param.data.showImages:[],
@@ -31,6 +33,7 @@ export default class cancle extends Component {
       	serviceInfo:this.props.param.data,
       	phonenum:'',
       	nowtype:this.props.param.type,
+        showDialog:false,
     };
   }
 
@@ -72,10 +75,29 @@ export default class cancle extends Component {
 	  	};
 	  }
 	}
+  renderCommentButton(){
+    if (this.state.nowtype==2&&this.state.serviceInfo.state=='已完成') {
+       return <View style={{justifyContent: 'center',alignItems: 'center'}}>
+                <Button 
+                  contentText={'评价服务'}
+                  Click={()=>this.CommentService()}
+                  bgcolor={mainColor}/>
+      </View>
+    }else{
+      return null;
+    }
+  }
+
+  //评价服务
+  CommentService(){
+      this.setState({
+        showDialog:!this.state.showDialog,
+      })
+  }
 
   renderCompleteButton(){
-  	if (this.state.nowtype==2) {
-  		return <View style={{justifyContent: 'center',alignItems: 'center',marginTop:20}}>
+  	if (this.state.nowtype==2&&this.state.serviceInfo.state=='进行中') {
+  		return <View style={{justifyContent: 'center',alignItems: 'center'}}>
 			          <Button 
 			            contentText={'完成服务'}
 			            Click={()=>this.completService()}
@@ -84,6 +106,93 @@ export default class cancle extends Component {
   	}else{
   		return null;
   	}
+  }
+  renderCancleButton(){
+    if (this.state.serviceInfo.state=='进行中') {
+        return  <View style={{justifyContent: 'center',alignItems: 'center'}}>
+              <Button 
+                contentText={'取消服务'}
+                Click={()=>this.cancleOrder()}
+                bgcolor={'#EE3B3B'}/>
+           </View> 
+    }else{
+      return null;
+    }
+  }
+
+  renderRepublish(){
+    if (this.state.serviceInfo.state=='已取消'&&this.state.nowtype==1) {
+        return  <View style={{justifyContent: 'center',alignItems: 'center'}}>
+              <Button 
+                contentText={'再次发布'}
+                Click={()=>this.rePublish()}
+                bgcolor={mainColor}/>
+           </View> 
+    }else{
+      return null;
+    }      
+  }
+
+  //再次发布服务
+  rePublish(){
+
+  }
+
+  renderAlertDialog(){
+    if (!this.state.showDialog){
+      return null;
+    }else{
+      return <AlertDialog
+            title={'评论'}
+            length={100}
+            cancle={()=>{this.setState({showDialog:false})}}
+            changeText={(msg)=>this.upLoad(msg)}/>
+    }
+  }
+
+  upLoad(msg){
+      Tools.getStorage('phonenum',(ret)=>{
+          var postData={
+            "phonenum":ret,
+            'content':msg,
+            'orderID':this.state.serviceInfo.serID,
+          }
+      Tools.postNotBase64(this.commentUrl,postData,(ret)=>{
+        ToastAndroid.show("评论成功..",2000)
+        this.setState({
+          showDialog:false,
+        })
+          },(err)=>{
+            ToastAndroid.show(JSON.stringify(err),2000);
+      this.setState({
+                        showDialog:false,
+              })
+          })
+      });      
+  }
+
+  renderContent(){
+    if (this.state.serviceInfo.state=='已拒绝') {
+            return <View style={{marginLeft:10,justifyContent: 'center',alignItems: 'center',}}>
+                    <Text>{Tools.showUserPhone(this.state.serviceInfo.phonenum)}</Text>
+                         <View  style={{flexDirection:'row',marginTop:19,marginLeft:10,justifyContent: 'flex-start'}}>
+                               <Text  style={{fontSize:Size(17),color:'#171717'}}>拒绝原因:</Text>
+                               <Text  style={{fontSize:Size(17),color:'#e80000'}}>{this.state.serviceInfo.notes}</Text>
+                          </View>
+                  </View>
+    }else{
+              return <View style={{marginLeft:10,justifyContent: 'center',alignItems: 'center',}}>
+                  <Text>{Tools.showUserPhone(this.state.serviceInfo.phonenum)}</Text>
+                  <View style={{flexDirection:'row',marginTop:19,justifyContent: 'flex-start'}}>
+                                  <Text style={{fontSize:Size(17),color:'#171717'}}>信用分:</Text>
+                                  <Text style={{fontSize:Size(17),color:mainColor}}>{this.state.serviceInfo.credit?this.state.serviceInfo.credit:'0'}</Text>
+                  </View> 
+                  <View style={{flexDirection:'row',marginTop:19,marginLeft:10,justifyContent: 'flex-start',}}>
+                    <Text style={{fontSize:Size(17),color:'#171717'}}>服务次数:</Text>
+                    <Text style={{fontSize:Size(17),color:mainColor}}>{this.state.serviceInfo.allNumber?this.state.serviceInfo.allNumber:'0'}次</Text>
+                  </View>
+                </View>
+    }
   }
 
   cancleOrder(){
@@ -126,7 +235,6 @@ export default class cancle extends Component {
                 isLoop={this.state.sliderImgs.length==1?false:true}
                 autoPlay={true} resizeMode={Image.resizeMode.stretch}
                 corverBg={true} indicatorStyle={{alignItems:'flex-end',right:20,}}
-                clickPage={()=>{this.imageClick()}}
                 navigator={this.props.navigator} /> 
             </View>
             <ScrollView style={{flex:1}}>
@@ -156,29 +264,17 @@ export default class cancle extends Component {
             <View style={styles.serviceInfo}>
                   <View style={{width:screenWidth,height:80,flexDirection:'row'}}>
                           <Image style={styles.userHead} source={{uri:this.state.userIcon}} />
-                          <View style={{marginLeft:10,justifyContent: 'center',alignItems: 'center',}}>
-                                <Text>{Tools.showUserPhone(this.state.serviceInfo.phonenum)}</Text>
-                                <View style={{flexDirection:'row',marginTop:19,justifyContent: 'flex-start'}}>
-                                  <Text style={{fontSize:Size(17),color:'#171717'}}>信用分:</Text>
-                                  <Text style={{fontSize:Size(17),color:mainColor}}>{this.state.serviceInfo.credit?this.state.serviceInfo.credit:'0'}</Text>
-                                </View> 
-                                <View style={{flexDirection:'row',marginTop:19,marginLeft:10,justifyContent: 'flex-start',}}>
-                                  <Text style={{fontSize:Size(17),color:'#171717'}}>服务次数:</Text>
-                                  <Text style={{fontSize:Size(17),color:mainColor}}>{this.state.serviceInfo.allNumber?this.state.serviceInfo.allNumber:'0'}次</Text>
-                                </View> 
-                          </View>
+                                {this.renderContent()}
                   </View>
             </View>
            <Spinner visible={this.state.loading} textContent={this.state.loadingText} textStyle={{color: '#FFF'}} />
-			{this.renderCompleteButton()} 
-		       <View style={{justifyContent: 'center',alignItems: 'center',marginTop:20,marginBottom:40}}>
-		          <Button 
-		            contentText={'取消服务'}
-		            Click={()=>this.cancleOrder()}
-		            bgcolor={'#EE3B3B'}/>
-		       </View>    
+			 {this.renderCompleteButton()} 
+                    {this.renderCommentButton()}
+                    {this.renderCancleButton()}
+                    {this.renderRepublish()}   
             </ScrollView> 
       	</View>
+        {this.renderAlertDialog()}
       </View>
     );
   }

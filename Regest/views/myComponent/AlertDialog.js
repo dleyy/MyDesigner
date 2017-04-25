@@ -36,7 +36,7 @@ export default class AlertDialog extends Component {
       			<View style={{width:screenWidth-50,height:40,marginTop:10,marginBottom:10,borderWidth:1,borderColor:'#6495ED'}}>
 	    			<TextInput
 	    				style={styles.inputeText}
-	    				maxLength={15}
+	    				maxLength={this.props.length?this.props.length:15}
 	    				autoFocus={true}
 		    			underlineColorAndroid={'transparent'}
 					onChangeText={(text) => this.setState({text:text})}

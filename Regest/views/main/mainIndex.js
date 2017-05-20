@@ -64,6 +64,8 @@ import UserList from '../Message/userInfo.js';
 import orderDetail from '../Message/infoDetail.js';
 //评论
 import Comment from '../Reward/Comment.js'
+//描述？？？
+import UDS from '../splash/userDescription'
 
 var _navigator;
 export default class mainIndex extends React.Component{
@@ -152,6 +154,9 @@ export default class mainIndex extends React.Component{
                 break;
             case 'AddService':
                 Component=AddService;
+                break;
+            case 'UDS':
+                Component = UDS;
                 break;
             default:
                 Component=FirstPage;

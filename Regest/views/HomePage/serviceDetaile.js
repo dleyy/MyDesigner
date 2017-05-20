@@ -37,6 +37,10 @@ export default class serviceDetaile extends Component {
     }
   } 
 
+  imageClick(){
+    
+  }
+
 
   toClloction(){
       Tools.getStorage('phonenum',(ret)=>{

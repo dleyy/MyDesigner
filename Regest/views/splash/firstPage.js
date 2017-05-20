@@ -28,41 +28,36 @@ export default class firstPage extends Component {
         }
     }
   componentDidMount() {
-        Tools.getStorage('phonenum',(ret)=>{
+
+      Tools.getStorage('phonenum',(ret)=>{
           if (Tools.isDataValid(ret)) {
-              var navigator = this.props.navigator;
-              if (navigator) {
-                  navigator.replace({
-                        name:'Home',
-                   })
-              }else{
-                Tools.get(this.imgUrl,(ret)=>{
-                    console.log("DLE===Img"+JSON.stringify(ret.images));
-                    this.setState({
-                      dataSource:this.dataSource.cloneWithPages(ret.images),
+            this.jumpToHome();
+          };
+      })
+
+                var postdata=[];
+                Tools.postNotBase64(this.imgUrl,postdata,(err)=>{
+                     this.setState({
+                      dataSource:this.dataSource.cloneWithPages(err.images),
                       page:0,
                     }) 
-                   },(err)=>{
-                    ToastAndroid.show(err,2000);
+                   },(ddd)=>{
+                    
                    })
-            }
-          }
-        });
          
   } 
 
-  gotoSecend(){
-    var navigator = this.props.navigator;
-    if (navigator){
-      navigator.push({
-        name:'two',
-        param:{
-          name:'heheda',
-          password:'ok'
-        }
-      })
-    };
+
+    jumpToHome(){
+    let navigator = this.props.navigator;
+      if (navigator){
+        navigator.resetTo({
+          name:'Home',
+        })
+      }
   }
+
+
     _renderPage(data: Object,pageID: number | string,) {
     return (
       <Image

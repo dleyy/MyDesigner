@@ -138,6 +138,15 @@ export default class regest extends Component{
 	}
 
 	toSevice(){
+	 let navigator = this.props.navigator;
+ 	 if (navigator) {
+            navigator.push({
+              name:'UDS',
+              param:{
+                title:'到位服务条款'
+              }
+            })
+          }
 	}
 
 	renderLoading(){

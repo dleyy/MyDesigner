@@ -16,6 +16,7 @@ import Tools from '../tools'
 import Icon from '../../node_modules/react-native-vector-icons/Ionicons';
 import Button from '../myComponent/Button'
 import Spinner from 'react-native-loading-spinner-overlay';
+import AMapLocation from 'react-native-amap-location';
 
 export default  class addReward extends Component {
   constructor(props) {
@@ -24,11 +25,37 @@ export default  class addReward extends Component {
       title:'',
       description:'',
       serviceType:'选择服务类型',
+      location:'成都市金牛区'
     }
     this.postUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/addservice";
     this.userImags=[];
     this.postUserImages=[];
+    this.unlisten=null;
   }
+
+  componentDidMount() {
+      this.setState({
+        loading:true,
+        loadingText:'定位中..'
+      })
+      this.unlisten = AMapLocation.addEventListener((data) =>{
+          this.setState({
+            loading:false,
+            location:data.city+data.district+data.street
+          })
+          AMapLocation.stopLocation();
+      });
+      AMapLocation.startLocation({
+          accuracy: 'HighAccuracy',
+          killProcess: true,
+          needDetail: true,
+      });
+  }
+ 
+componentWillUnmount() {
+      AMapLocation.stopLocation();
+
+}
 
   back(){
     let navigator = this.props.navigator;
@@ -61,11 +88,27 @@ export default  class addReward extends Component {
   }
 
   toSevice(){
-      alert('用户服务协议')
+    let navigator = this.props.navigator;
+  if (navigator) {
+            navigator.push({
+              name:'UDS',
+              param:{
+                title:'用户服务协议'
+              }
+            })
+          }
   }
 
   toRule(){
-      alert('服务者管理规则')
+    let navigator = this.props.navigator;
+  if (navigator) {
+            navigator.push({
+              name:'UDS',
+              param:{
+                title:'服务者管理规则'
+              }
+            })
+          }
   }
 
   imgSplice(i){

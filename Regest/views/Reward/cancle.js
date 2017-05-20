@@ -182,7 +182,7 @@ export default class cancle extends Component {
                   </View>
     }else{
               return <View style={{marginLeft:10,justifyContent: 'center',alignItems: 'center',}}>
-                  <Text>{Tools.showUserPhone(this.state.serviceInfo.phonenum)}</Text>
+                  <Text>{this.state.serviceInfo.phonenum}</Text>
                   <View style={{flexDirection:'row',marginTop:19,justifyContent: 'flex-start'}}>
                                   <Text style={{fontSize:Size(17),color:'#171717'}}>信用分:</Text>
                                   <Text style={{fontSize:Size(17),color:mainColor}}>{this.state.serviceInfo.credit?this.state.serviceInfo.credit:'0'}</Text>

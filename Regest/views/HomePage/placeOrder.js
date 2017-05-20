@@ -34,8 +34,8 @@ export default  class placeOrder extends Component {
 	  };
 	}
 
-	componentDidMount() {
-		var dd = new Date();
+	componentDidMount(){
+	    var dd = new Date();
 	    var pickData=[];
 	    var pickTime=[];
 	    pickData.push(dd.getMonth()+1+"月"+dd.getDate()+'日');
@@ -46,17 +46,7 @@ export default  class placeOrder extends Component {
 		  var data =  m+"月"+d+'日';
 		  pickData.push(data); 
 	    }
-	    if (dd.getHours()<21&&dd.getHours()>7) {
-	    	for(var i=1;i<=21-dd.getHours();i++){
-	    		pickTime.push(dd.getHours()+i+":00")
-	    	}
-	    }else{
-	    	//这里 时间在7点前和21点之后的 不予考虑
-	    	return;
-	    }
-	    this.pickTime=pickTime;
 	    this.pickData=pickData;
-
 	    Tools.getStorage('phonenum',(ret)=>{
 	    		this.setState({
 	    			phonenum:ret,
@@ -67,11 +57,29 @@ export default  class placeOrder extends Component {
 	}
 
 	toQuestion(){
-
+	
+	let navigator = this.props.navigator;
+	if (navigator) {
+            navigator.push({
+              name:'UDS',
+              param:{
+                title:'常见问题'
+              }
+            })
+          } 
+	
 	}
 
 	toSevice(){
-
+	let navigator = this.props.navigator;
+	if (navigator) {
+            navigator.push({
+              name:'UDS',
+              param:{
+                title:'用户服务协议'
+              }
+            })
+          } 
 	}
 
 	back(){
@@ -143,13 +151,14 @@ export default  class placeOrder extends Component {
 
 	returnPicker(){
 		if(this.state.showPicker){
-		return   	
+		return  null;
 		}else{
 			return <Text style={{alignSelf:'center',marginLeft:10}}>{this.state.serviceTime}</Text>;
 		}
 	}
 
 	renderPick(){
+
 		if (Tools.isDataValid(this.pickData)) {
 			return  <Picker
 						style={{flex:1,justifyContent: 'center',alignItems: 'center',}}

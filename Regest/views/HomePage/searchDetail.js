@@ -92,6 +92,9 @@ export default class searchDetail extends Component {
     if (navigator){
       navigator.push({
         name:'ServiceDetaile',
+        param:{
+          data:rowData
+        }
       })
     };
   }

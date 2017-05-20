@@ -96,6 +96,9 @@ export default class mine extends Component {
           })
         }
       break;
+      case '积分商城':
+          ToastAndroid.show('系统维护，暂未开放',2000);
+      break;
       case '我的钱包':
           if (navigator) {
             navigator.push({
@@ -109,7 +112,16 @@ export default class mine extends Component {
               name:'SkillManager'
             })
           }
-      break;    
+      break;
+      case '使用手册':
+         if (navigator) {
+            navigator.push({
+              name:'UDS',
+              param:{
+                title:'使用手册'
+              }
+            })
+          } 
     }
   }
 

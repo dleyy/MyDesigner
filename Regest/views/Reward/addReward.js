@@ -25,8 +25,9 @@ export default  class addReward extends Component {
       title:'',
       description:'',
       serviceType:'选择服务类型',
-      location:'成都市金牛区'
+      location:''
     }
+    this.location="成都市郫都区学府街"
     this.postUrl="http://www.freeexplorer.top/leige/public/index.php/index/index/addservice";
     this.userImags=[];
     this.postUserImages=[];
@@ -41,7 +42,7 @@ export default  class addReward extends Component {
       this.unlisten = AMapLocation.addEventListener((data) =>{
           this.setState({
             loading:false,
-            location:data.city+data.district+data.street
+            location:this.location
           })
           AMapLocation.stopLocation();
       });
